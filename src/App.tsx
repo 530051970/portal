@@ -49,15 +49,9 @@ const App: React.FC = () => {
                             <div className="main-menu">
                                 <nav id="mobile-menu">
                                     <ul>
-                                        <li className="menu-item-has-children"><a href="index.html">产品介绍</a>
-                                            <ul className="sub-menu">
-                                                <li><a href="">在线笔试</a></li>
-                                                <li><a href="">在线面试</a></li>
-                                                <li><a href="">职业测评</a></li>
-                                                <li><a href="">问卷调查</a></li>
-                                            </ul>
+                                        <li><a href="index.html">功能模块</a>
                                         </li>
-                                        <li className="menu-item-has-children"><a href="">解决方案</a>
+                                        <li><a href="">产品特色</a>
                                             <ul className="sub-menu">
                                                <li><a href="">校园招聘</a></li>
                                                 <li><a href="">社会招聘</a></li>
@@ -65,9 +59,9 @@ const App: React.FC = () => {
                                                 <li><a href="">人才盘点</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="">定价方案</a></li>
-                                        <li ><a href="">行业题库</a>
-                                        </li>
+                                        <li><a href="">能力矩阵</a></li>
+                                        <li ><a href="">更新日志</a></li>
+                                        <li ><a href="">使用指南</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -78,7 +72,7 @@ const App: React.FC = () => {
                         </div>
                         <div className="header__menu-area f-right" style={{height: 100}}>
                             <div className="custom" style={{float:"left",marginRight:3}}>
-                               <a href="" className="grb-btn-2">进入控制台</a>
+                               <a href="" className="grb-btn-2">体验中心</a>
                                {/* <button className="draw" onClick={()=>{window.location.href='http://mis.leego.vip'}}>进入控制台</button> */}
                             </div>
                         </div>
@@ -217,20 +211,30 @@ const App: React.FC = () => {
             <div className="slider-active swiper-container">
                 <div className="swiper-wrapper">
                     <div className="single-slider slider-height st-2 swiper-slide slider-overlay"
-                        data-swiper-autoplay="5000">
+                        data-swiper-autoplay="5000" style={{backgroundColor: '#040021'}}>
                         {/* <div className="slide-bg" style={{backgroundImage:"url(/assets/img/hero/banner2.jpg)"}}></div> */}
-                        <div className="slide-bg" data-background="assets/img/hero/banner2.jpg"></div>
+                        {/* <div className="slide-bg" data-background="assets/img/hero/banner2.jpg"></div> */}
                         <div className="banner3-shape">
                             <img src="/assets/img/shape/banner3-shape.png" alt=""/>
                         </div>
                         <div className="container">
                             <div className="row justify-content-center">
-                                <div className="col-lg-9">
+                                <div className="col-lg-12">
                                     <div className="hero-content text-center">
-                                        <p data-animation="fadeInUp" data-delay=".3s">一站式在线笔试，在线面试平台</p>
-                                        <h1 data-animation="fadeInUp" data-delay=".5s">招聘更智能、更专业</h1>
+                                        <p data-animation="fadeInUp" data-delay=".3s">基于云原生技术 打造</p>
+                                        <h1 data-animation="fadeInUp" data-delay=".5s">
+                                            <div style={{fontSize:66, fontWeight:900}}>
+                                                <span style={{fontFamily: "system-ui"}}>AuthHub</span>
+                                                <span>身份校验系统</span>
+                                            </div>
+                                            </h1>
+                                            <div className="introduce">
+                                                <span>AuthHub是一款精心设计的无缝对接AWS云服务, 开箱即用的身份认证解决方案</span><br/>
+                                                <span>支持多身份认证，拥有高颜值的自定义页面且无需引入其他框架的产品理念</span><br/>
+                                                <span>基于稳定生产的商业项目升级优化而来，更加贴近企业级的需求</span>
+                                            </div>
                                         <div className="hero-content-btn st-2" data-animation="fadeInUp" data-delay=".7s">
-                                            <a href="" className="grb-btn">体验DEMO</a>
+                                            <a href="" className="grb-btn">开始定制</a>
                                         </div>
                                     </div>
                                 </div>
@@ -281,7 +285,7 @@ const App: React.FC = () => {
                 </div>
             </div>
         </section>
-        <section className="about__area st-2">
+        {/* <section className="about__area st-2">
             <div className="container">
                 <div className="row wow fadeInUp">
                     <div className="col-xl-6 col-lg-5">
@@ -373,14 +377,14 @@ const App: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> */}
         <section className="service-box-area pt-120 pb-80">
             <div className="container">
                 <div className="row wow fadeInUp">
                     <div className="col-lg-12">
                         <div className="section-title mb-55 text-center">
                             <div className="border-c-bottom st-2">
-                                <p>我们在以下场景都可以帮到您</p>
+                                <p>功能模块</p>
                             </div>
                         </div>
                     </div>
@@ -393,7 +397,7 @@ const App: React.FC = () => {
                                     <i className="flaticon-idea"></i>
                                 </div>
                                 <div className="service-box-content-text">
-                                    <h4><a href="service-details.html">校园招聘</a></h4>
+                                    <h4><a href="service-details.html">用户管理</a></h4>
                                     <p>灵活制定笔试时间；支持多种方式组卷，试题顺序随机，选项随机；启用摄像头，可以确保笔试过程中全程录像和多种防作弊策略；提交试卷后平台10s钟自动阅卷，并生成考试报告。</p>
                                 </div>
                             </div>
@@ -406,7 +410,7 @@ const App: React.FC = () => {
                                     <i className="flaticon-consultation"></i>
                                 </div>
                                 <div className="service-box-content-text">
-                                    <h4><a href="service-details.html">社会招聘</a></h4>
+                                    <h4><a href="service-details.html">多通道身份认证</a></h4>
                                     <p>生成试卷后可以批量邀请候选人参加笔试或面试；笔试过程中全程录像和多种防作弊策略；提交试卷后平台10s钟自动阅卷，并生成考试报告；支持自定义面试题库，万人同时在线。</p>
                                 </div>
                             </div>
@@ -419,7 +423,7 @@ const App: React.FC = () => {
                                     <i className="flaticon-healthcare"></i>
                                 </div>
                                 <div className="service-box-content-text">
-                                    <h4><a href="service-details.html">职业测评</a></h4>
+                                    <h4><a href="service-details.html">接口鉴权</a></h4>
                                     <p>面向大中型企业和培训机构，定期组织各种性格测试，党建主题活动测评以及业务测评，多维度全面评估测评对象，系统自动生成画像报告，群体报告，为决策者决策提供数据支撑。</p>
                                 </div>
                             </div>
@@ -432,7 +436,7 @@ const App: React.FC = () => {
                                     <i className="flaticon-analytics"></i>
                                 </div>
                                 <div className="service-box-content-text">
-                                    <h4><a href="service-details.html">趣味测评/问卷调查</a></h4>
+                                    <h4><a href="service-details.html">MFA多因素认证</a></h4>
                                     <p>几分钟简单操作便可以生成一份问卷；支持多题型，支持多端；支持用户同时在线作答；实时统计调查结果；问卷模版自定义，还可以设置抽奖小礼品等。</p>
                                 </div>
                             </div>
@@ -445,7 +449,7 @@ const App: React.FC = () => {
                                     <i className="flaticon-digital-marketing"></i>
                                 </div>
                                 <div className="service-box-content-text">
-                                    <h4><a href="service-details.html">行业题库</a></h4>
+                                    <h4><a href="service-details.html">企业级SSO认证</a></h4>
                                     <p>帮助企业完成从0到1的出题及题库应用全周期管理。汇聚各行业模拟题，历年真题，并与业内人士合作，提供真题解析和考前指导，方便广大考生积极备考，为进入考场保驾护航。</p>
                                 </div>
                             </div>
@@ -458,7 +462,7 @@ const App: React.FC = () => {
                                     <i className="flaticon-web-maintenance"></i>
                                 </div>
                                 <div className="service-box-content-text">
-                                    <h4><a href="service-details.html">增值服务</a></h4>
+                                    <h4><a href="service-details.html">多语言支持</a></h4>
                                     <p>平台会为客户提供一些免费的日常办公用的小插件，组织机构管理、工作流、邮件、一键审批等系统服务，提高工作效率，无纸化办公，与客户互相成长。</p>
                                 </div>
                             </div>
@@ -494,7 +498,7 @@ const App: React.FC = () => {
                                             <span>01</span>
                                         </div>
                                         <div className="choosing__text">
-                                            <h5>领先的技术理念</h5>
+                                            <h5>极致的用户体验</h5>
                                             <p>采用前后端分离、微服务、容器化技术，利用k8s做服务编排，线上各服务健康状况24h监控，系统异常能做到分钟级响应。</p>
                                         </div>
                                     </li>
@@ -503,8 +507,8 @@ const App: React.FC = () => {
                                             <span>02</span>
                                         </div>
                                         <div className="choosing__text">
-                                            <h5>强大的安全机制</h5>
-                                            <p>平台采用多租户分离理念，确保不同客户，客户不同组织之间的数据相互隔离，互不干扰，加密加盐机制确保用户数据安全。</p>
+                                            <h5>强大的安全机制 </h5>
+                                            <p>平台支持采用HTTPS/敏感信息加盐加密机制，确保用户数据安全，利用云平台的安全机制提升用户的数据安全</p>
                                         </div>
                                     </li>
                                     <li>
@@ -512,7 +516,7 @@ const App: React.FC = () => {
                                             <span>03</span>
                                         </div>
                                         <div className="choosing__text">
-                                            <h5>完善的售后培训体系</h5>
+                                            <h5>一键部署开箱即用</h5>
                                             <p>系统文档完备，专业专人售后支持。定期举办线上线下产品使用沟通会，现场答疑。邀请业内人士举办各种讲座，培养用户心智。</p>
                                         </div>
                                     </li>
@@ -523,180 +527,6 @@ const App: React.FC = () => {
                 </div>
             </div>
         </div>
-        <div className="testimonial-area st-2">
-            <div className="container">
-                <div className="row wow fadeInUp align-items-center">
-                    <div className="col-lg-6">
-                        <div className="section-title mb-30">
-                            <div className="border-left st-2">
-                                <p>行业者说</p>
-                            </div>
-                            <h2>一些来自于客户的反馈</h2>
-                        </div>
-                        <div className="swiper-container testimonial-active-2 st-3">
-                            <div className="swiper-wrapper">
-                                <div className="swiper-slide">
-                                    <div className="testimonial-single st-2">
-                                        <p className="mb-30">梨猫测评 是我用过的迭代非常快、体验非常好的在测评网站，没有之一。从项目生成，测评管理，试卷生成，到考后自动阅卷，自动生成报告，一气呵成，对用户非常友好，替公司节约了大量的人力成本。</p>
-                                        <div className="testimonial-name">
-                                            <h5>方女士 总监</h5>
-                                            <p>北大纵横</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="swiper-slide">
-                                    <div className="testimonial-single st-2">
-                                        <p className="mb-30">每年的校招是人力部门最忙的时节，每年都投入了大量的人力异地出差招聘，投入的人力非常大。自从使用梨猫招聘系统，开启远程在线笔试面试，再也不用去学校做线下招聘了，而且系统自动阅卷，自动生成候选人职业能力画像，较好的支持了每年的大量招聘活动。希望平台越做越好，从企业出发，推出更多新的功能。</p>
-                                        <div className="testimonial-name">
-                                            <h5>李先生 HRBP</h5>
-                                            <p>某互联网公司</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="testimonial-nav-2">
-                                <div className="testimonial2-btn-prev st-2"><i className="fal fa-angle-left"></i></div>
-                                <div className="testimonial2-btn-next st-2"><i className="fal fa-angle-right"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-6 d-none d-lg-block">
-                        <div className="testimonial-right p-relative">
-                            <div className="test-i-img">
-                                <img src="/assets/img/testimonial/test-i-img.jpg" alt=""/>
-                            </div>
-                            <div className="testimonial-right-img p-relative">
-                                <img src="/assets/img/testimonial/test-r-img.jpg" alt=""/>
-                                <div className="testimonial-quote pos-2 st-2">
-                                    <i className="fal fa-quote-left"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <section className="hire-area" style={{backgroundImage:"url(/assets/img/bg/hire-bg.jpg)"}}>
-            <div className="container">
-                <div className="row wow fadeInUp justify-content-center">
-                    <div className="col-lg-8 col-md-11">
-                        <div className="hire-content text-center">
-                            <div className="section-title mb-55">
-                                <h2 className="white-color">您是否也有一些天马行空的想法?</h2>
-                            </div>
-                            <div className="hire-btn">
-                                <a href="contact.html" className="grb-btn st-3">加入我们</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section className="portfolio-st-2 pt-120 pb-115 grey-bg">
-            <div className="container">
-                <div className="row wow fadeInUp justify-content-center">
-                    <div className="col-lg-8">
-                        <div className="section-title mb-40 text-center">
-                            <div className="border-c-bottom st-2">
-                                <p>我们的产品</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row wow fadeInUp">
-                    <div className="button-group portfolio-button">
-                        <button className="active" data-filter="*">全部</button>
-                        <button data-filter=".c-1">笔试面试</button>
-                        <button data-filter=".c-2">职业测评</button>
-                        <button data-filter=".c-3">问卷调查</button>
-                        <button data-filter=".c-4">行业题库</button>
-                        <button data-filter=".c-5">增值服务</button>
-                    </div>
-                </div>
-                <div className="row wow fadeInUp grid">
-                    <div className="col-lg-4 col-md-6 grid-item c-1 c-2 c-3 c-4" style={{position: "absolute",left: 0, top: 0}}>
-                        <div className="portfolio-item mb-30">
-                            <div className="portfolio-item-img p-relative">
-                                <img src="/assets/img/portfolio/p-1.jpg" alt=""/>
-                                <div className="portfolio-hover-contnet">
-                                    <div className="portfolio-hover-inner text-center">
-                                        <h5 className="portfolio-hover-heading">
-                                            <a href="portfolio-details.html">题库管理系统</a>
-                                        </h5>
-                                        <p>支持多种题型，可以手工倒入试题，也可以批量上传</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-4 col-md-6 grid-item c-1 c-2 c-4 c-3" style={{position: "absolute",left: 400, top: 0}}>
-                        <div className="portfolio-item mb-30">
-                            <div className="portfolio-item-img p-relative">
-                                <img src="/assets/img/portfolio/p-2.jpg" alt=""/>
-                                <div className="portfolio-hover-contnet">
-                                    <div className="portfolio-hover-inner text-center">
-                                        <h5 className="portfolio-hover-heading">
-                                            <a href="portfolio-details.html">试卷生成引擎</a>
-                                        </h5>
-                                        <p>兼容随机抽题、指定题型等多种抽题方式，自由组合，确保试卷千人千面</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-4 col-md-6 grid-item c-1 c-2 c-3" style={{position: "absolute",left: 800, top: 0}}>
-                        <div className="portfolio-item mb-30">
-                            <div className="portfolio-item-img p-relative">
-                                <img src="/assets/img/portfolio/p-3.jpg" alt=""/>
-                                <div className="portfolio-hover-contnet">
-                                    <div className="portfolio-hover-inner text-center">
-                                        <h5 className="portfolio-hover-heading">
-                                            <a href="portfolio-details.html">考试管理系统</a>
-                                        </h5>
-                                        <p>指定时间段，指定时间点组织考试，提供智能监控系统，确保全流程可追踪</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-4 col-md-6 grid-item c-2 c-4" style={{position: "absolute",left: 0, top: 280}}>
-                        <div className="portfolio-item mb-30">
-                            <div className="portfolio-item-img p-relative">
-                                <img src="/assets/img/portfolio/p-4.jpg" alt=""/>
-                                <div className="portfolio-hover-contnet">
-                                    <div className="portfolio-hover-inner text-center">
-                                        <h5 className="portfolio-hover-heading">
-                                            <a href="portfolio-details.html">自动阅卷系统</a>
-                                        </h5>
-                                        <p>测评提交之后系统自动评卷，10秒之后出报告，并给出解析标准</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-4 col-md-6 grid-item c-2 c-3" style={{position: "absolute",left: 800, top: 280}}>
-                        <div className="portfolio-item mb-30">
-                            <div className="portfolio-item-img p-relative">
-                                <img src="/assets/img/portfolio/p-5.jpg" alt=""/>
-                                <div className="portfolio-hover-contnet">
-                                    <div className="portfolio-hover-inner text-center">
-                                        <h5 className="portfolio-hover-heading">
-                                            <a href="portfolio-details.html">画像报告平台</a>
-                                        </h5>
-                                        <p>分用户，群体等维度提供检测报告，并可以自定义报告模板，适应多种场景</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="portfolio-see-all">
-                    <a href="portfolio.html" className="grb-border-btn st-2">
-                        查看全部
-                    </a>
-                </div>
-            </div>
-        </section>
         <section className="pricing-area pt-60">
             <div className="container">
                 <div className="pricing-inner">
@@ -713,10 +543,10 @@ const App: React.FC = () => {
                         <div className="tab-content" id="myTabContent">
                             <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <div className="row g-0">
-                                    <div className="col-lg-3 col-md-6">
+                                    <div className="col-lg-4 col-md-6">
                                         <div className="single-pricing mb-10">
                                             <div className="pricing-title">
-                                                <h5>在线笔试</h5>
+                                                <h5>社区版</h5>
                                                 <span>¥10</span><span style={{color:"grey",fontSize:14}}>/人/次</span>
                                             </div>
                                             <ul className="pricing-list">
@@ -734,10 +564,10 @@ const App: React.FC = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-3 col-md-6">
+                                    <div className="col-lg-4 col-md-6">
                                         <div className="single-pricing mb-30">
                                             <div className="pricing-title">
-                                                <h5>在线面试</h5>
+                                                <h5>旗舰版</h5>
                                                 <span>¥15</span><span style={{color:"grey",fontSize:14}}>/人/次</span>
                                             </div>
                                             <ul className="pricing-list">
@@ -755,10 +585,10 @@ const App: React.FC = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-3 col-md-6">
+                                    <div className="col-lg-4 col-md-6">
                                         <div className="single-pricing mb-30">
                                             <div className="pricing-title">
-                                                <h5>智能测评</h5>
+                                                <h5>企业版</h5>
                                                 <span>¥20</span><span style={{color:"grey",fontSize:14}}>/人/次</span>
                                             </div>
                                             <ul className="pricing-list">
@@ -776,27 +606,6 @@ const App: React.FC = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-3 col-md-6">
-                                        <div className="single-pricing mb-30">
-                                            <div className="pricing-title">
-                                                <h5>问卷调查</h5>
-                                                <span>¥2</span><span style={{color:"grey",fontSize:14}}>/人/次</span>
-                                            </div>
-                                            <ul className="pricing-list">
-                                                <li>多端（H5/小程序/IOS/安卓）组卷</li>
-                                                <li>题库管理</li>
-                                                <li>一键分享</li>
-                                                <li>智能邀约</li>
-                                                <li>分析报告</li>
-                                                <li>智能抽奖</li>
-                                            </ul>
-                                            <div className="pricing-btn text-center">
-                                                <a href="contact.html" className="grb-border-btn st-1">
-                                                   免费试用
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -804,7 +613,7 @@ const App: React.FC = () => {
                 </div>
             </div>
         </section>
-        <section className="blog-area blog-area-2 pt-120">
+        {/* <section className="blog-area blog-area-2 pt-120">
             <div className="container">
                 <div className="row wow fadeInUp justify-content-center counter-head">
                     <div className="col-lg-6 col-md-8">
@@ -818,8 +627,8 @@ const App: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </section>
-        <div className="brand-area pt-10 pb-100">
+        </section> */}
+        {/* <div className="brand-area pt-10 pb-100">
             <div className="container">
                 <div className="row wow fadeInUp">
                     <div className="col-12">
@@ -890,7 +699,7 @@ const App: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> */}
     </main>
     <footer>
         <section className="footer-area pt-100 pb-60">
@@ -954,7 +763,7 @@ const App: React.FC = () => {
                 <div className="row wow fadeInUp align-items-center">
                     <div className="col-lg-6 col-md-6">
                         <div className="copyright-text st-2">
-                            <p>&copy; <script>document.write(new Date().getFullYear());</script> 之岸(上海)信息技术有限公司&nbsp;&nbsp;沪ICP备18054806号-8</p>
+                            <p>&copy; <script>document.write(new Date().getFullYear());</script> 亚马逊云科技&nbsp;&nbsp;IBT团队技术支持</p>
                         </div>
                     </div>
                     <div className="col-lg-6 col-md-6">
