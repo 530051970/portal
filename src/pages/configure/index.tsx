@@ -2,21 +2,33 @@ import { Link, useNavigate } from "react-router-dom";
 import "./index.css";
 import { nav2Home } from "../../utils";
 import {
+  AttributeEditor,
   Checkbox,
   Container,
-  FileUpload,
   FormField,
   Grid,
+  Input,
   Header,
   Multiselect,
   SpaceBetween,
   Tiles,
+  Select,
+  Button,
+  Cards,
 } from "@cloudscape-design/components";
 import { Link as CloudscapeLink } from "@cloudscape-design/components";
-import { useState } from "react";
-import { ColorPicker } from "antd";
+import { useEffect, useRef, useState } from "react";
+import { ColorPicker, Divider, Drawer } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { AuthTypeList } from "../const";
+
+const initialOidc = {
+  label: "Authing",
+  value: "authing",
+  description: "",
+  clientId: "",
+  redirectUrl: "",
+};
 
 const Configure: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +36,15 @@ const Configure: React.FC = () => {
   const [background, setBackground] = useState("single");
   const [singleColor, setSingleColor] = useState("#00071659");
   const [singleColorOpen, setSingleColorOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cloudProvider, setCloudProvider] = useState<string>("aws");
+  const [open, setOpen] = useState(false);
+  const [agree, setAgree] = useState(false);
+  const [ak, setAk] = useState("");
+  const [sk, setSk] = useState("");
+  const [selectedPics, setSelectedPics] = useState<
+    { name: string; img: string }[]
+  >([]);
   const [gradientColor, setGradientColor] = useState<
     { color: string; percent: number }[]
   >([
@@ -31,8 +52,9 @@ const Configure: React.FC = () => {
     { color: "rgb(135, 208, 104)", percent: 100 },
   ]);
 
-  const [file, setFile] = useState<File[]>([]);
+  //   const [file, setFile] = useState<File[]>([]);
   const [mode, setMode] = useState("multi");
+  const prevAuthTypesRef = useRef<string[]>([]);
   const [authTypes, setAuthTypes] = useState<
     { label?: string; value?: string; description?: string }[]
   >([
@@ -42,6 +64,51 @@ const Configure: React.FC = () => {
       description: "第三方IDP供应商申请的账号身份验证",
     },
   ]);
+  const [output, setOutput] = useState("cloud");
+  const [oidcList, setOidcList] = useState<any[]>([initialOidc]);
+  const [oidcProviderOption, setOidcProviderOption] = useState({
+    label: "Cognito",
+    value: "cognito",
+    // description: "sub value",
+  } as any);
+  const targetAuthType = "oidc";
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      console.log("选择的文件:", files[0]);
+      // 你可以在这里上传文件到服务器，例如通过 fetch 或 axios
+    }
+  };
+
+  useEffect(() => {
+    const prev = prevAuthTypesRef.current;
+    const curr = authTypes.map((item) => item.value);
+
+    const wasAbsentBefore = !prev.includes(targetAuthType);
+    const isPresentNow = curr.includes(targetAuthType);
+
+    if (wasAbsentBefore && isPresentNow) {
+      //   console.log(`✅ authTypes 中新增了值 "${targetAuthType}"`);
+      setOidcList([initialOidc]);
+    }
+
+    // 更新 ref
+    prevAuthTypesRef.current = authTypes.map((item) => item.value || "");
+    // if()
+  }, [authTypes]);
 
   const genStyle = (background: string) => {
     switch (background) {
@@ -97,20 +164,34 @@ const Configure: React.FC = () => {
           //       uploading company data or other banned files.
           //     </p>
           //   </Dragger>
-          <FileUpload
-            onChange={({ detail }) => setFile(detail.value)}
-            value={file}
-            i18nStrings={{
-              uploadButtonText: (e) => (e ? "选择图片" : "选择图片"),
-              dropzoneText: (e) =>
-                e ? "Drop files to upload" : "Drop file to upload",
-              removeFileAriaLabel: (e) => `Remove file ${e + 1}`,
-              limitShowFewer: "Show fewer files",
-              limitShowMore: "Show more files",
-              errorIconAriaLabel: "Error",
-            }}
-            tokenLimit={3}
-          />
+          <SpaceBetween direction="horizontal" size="m">
+            <div>
+              <Button onClick={showDrawer}>使用内置图片</Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;或
+            </div>
+            <Button onClick={handleButtonClick}>上传自定义图片</Button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
+            {/* <FileUpload
+              onChange={({ detail }) => setFile(detail.value)}
+              value={file}
+              i18nStrings={{
+                uploadButtonText: (e) =>
+                  e ? "上传自定义图片" : "上传自定义图片",
+                dropzoneText: (e) =>
+                  e ? "Drop files to upload" : "Drop file to upload",
+                removeFileAriaLabel: (e) => `Remove file ${e + 1}`,
+                limitShowFewer: "Show fewer files",
+                limitShowMore: "Show more files",
+                errorIconAriaLabel: "Error",
+              }}
+              tokenLimit={3}
+            /> */}
+          </SpaceBetween>
         );
     }
   };
@@ -333,6 +414,107 @@ const Configure: React.FC = () => {
                           />
                         )}
                       </Grid>
+                      {authTypes.some((item) => item.value === "oidc") && (
+                        <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                          <FormField
+                            description="从对应的IPD供应商控制台获取"
+                            label="OIDC账号资料"
+                          />
+                          <AttributeEditor
+                            onAddButtonClick={() =>
+                              setOidcList([...oidcList, {}])
+                            }
+                            onRemoveButtonClick={({
+                              detail: { itemIndex },
+                            }) => {
+                              if (oidcList.length == 1) return;
+                              const tmpItems = [...oidcList];
+                              tmpItems.splice(itemIndex, 1);
+                              setOidcList(tmpItems);
+                            }}
+                            items={oidcList}
+                            addButtonText="添加新的OIDC账号"
+                            definition={[
+                              {
+                                label: "OIDC供应商",
+                                constraintText: "请选择OIDC账号提供商",
+                                control: () => (
+                                  <Select
+                                    selectedOption={oidcProviderOption}
+                                    onChange={({ detail }) =>
+                                      setOidcProviderOption(
+                                        detail.selectedOption
+                                      )
+                                    }
+                                    options={[
+                                      {
+                                        label: "Cognito",
+                                        value: "cognito",
+                                        labelTag: "This is a label tag",
+                                      },
+                                      {
+                                        label: "Authing",
+                                        value: "authing",
+                                        labelTag: "This is a label tag",
+                                      },
+                                      {
+                                        label: "Keycloak",
+                                        value: "keycloak",
+                                        labelTag: "This is a label tag",
+                                      },
+                                    ]}
+                                    triggerVariant="option"
+                                  />
+                                ),
+                                info: (
+                                  <CloudscapeLink variant="info">
+                                    Info
+                                  </CloudscapeLink>
+                                ),
+                              },
+                              {
+                                label: "资料详情",
+                                control: (item) => (
+                                  <SpaceBetween direction="vertical" size="s">
+                                    <Input
+                                      value={item.description}
+                                      placeholder="输入描述 - 可选"
+                                      onChange={() => {}}
+                                    />
+                                    <Input
+                                      value={item.cliendId}
+                                      placeholder="输入Client Id"
+                                      onChange={() => {}}
+                                    />
+                                    <Input
+                                      value={item.redirectUrl}
+                                      placeholder="输入RedirectURL"
+                                      onChange={() => {}}
+                                    />
+                                  </SpaceBetween>
+                                ),
+                                info: (
+                                  <CloudscapeLink variant="info">
+                                    Info
+                                  </CloudscapeLink>
+                                ),
+                              },
+                            ]}
+                            empty="No items associated with the resource."
+                            removeButtonText={"移除该账号"}
+                            disableAddButton={5 - oidcList.length <= 0}
+                            additionalInfo={
+                              5 - oidcList.length <= 0 ? (
+                                <span>您最多只能添加 5 个账号</span>
+                              ) : (
+                                <span>
+                                  您可以再追加 {5 - oidcList.length} 个账号
+                                </span>
+                              )
+                            }
+                          />
+                        </Grid>
+                      )}
                     </SpaceBetween>
                   </div>
                 </Container>
@@ -345,45 +527,187 @@ const Configure: React.FC = () => {
                       代码生成部署
                     </Header>
                   }
-                ></Container>
-                <FormField
-                  description={
-                    <>
-                      请详读我们的{" "}
-                      <CloudscapeLink
-                        href="#"
-                        external={true}
-                        variant="primary"
-                        fontSize="body-s"
-                      >
-                        条款与限制
-                      </CloudscapeLink>{" "}
-                      并点击同意。
-                    </>
-                  }
-                  label="条款与限制"
                 >
-                  <Checkbox checked={false}>我同意条款与限制</Checkbox>
-                </FormField>
-                {/* <Steps
-    current={1}
-    direction="vertical"
-    items={[
-      {
-        title: '自定义主题',
-        description: '自定义交互样式和风格',
-      },
-      {
-        title: '配置功能',
-        description: '定义认证方式及行为',
-      },
-      {
-        title: '代码生成 & 线上部署',
-        description: '下载到本地或云端部署',
-      },
-    ]}
-  /> */}
+                  <div style={{ paddingTop: 20, paddingBottom: 20 }}>
+                    <SpaceBetween direction="vertical" size="s">
+                      <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                        <FormField
+                          description="请选择交付方式"
+                          label="部署方式"
+                        />
+                        <Tiles
+                          onChange={({ detail }) => setOutput(detail.value)}
+                          value={output}
+                          items={[
+                            {
+                              label: "本地下载",
+                              value: "download",
+                              description: "将代码下载到本地",
+                            },
+                            {
+                              label: "云端部署",
+                              value: "cloud",
+                              description: "将代码部署上云",
+                            },
+                          ]}
+                        />
+                      </Grid>
+                      {output === "cloud" && (
+                        <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                          <FormField
+                            description="请配置部署终端"
+                            label="部署终端"
+                          />
+                          <SpaceBetween direction="vertical" size="xxs">
+                            <Grid gridDefinition={[{ colspan: 6 }]}>
+                              <Tiles
+                                onChange={({ detail }) =>
+                                  setCloudProvider(detail.value)
+                                }
+                                value={cloudProvider}
+                                items={[
+                                  {
+                                    label: "亚马逊云",
+                                    description: "Amazon Web Services（AWS）",
+                                    value: "aws",
+                                  },
+                                ]}
+                              />
+                            </Grid>
+                            <Grid
+                              gridDefinition={[{ colspan: 6 }, { colspan: 6 }]}
+                            >
+                              <FormField
+                                description="控制后台获取账号"
+                                label="账号（AK）"
+                              >
+                                <Input
+                                  value={ak}
+                                  onChange={(event) =>
+                                    setAk(event.detail.value)
+                                  }
+                                />
+                              </FormField>
+                              <FormField
+                                description="控制后台获取账号对应密钥"
+                                label="密钥（SK）"
+                              >
+                                <Input
+                                  value={sk}
+                                  onChange={(event) =>
+                                    setSk(event.detail.value)
+                                  }
+                                />
+                              </FormField>
+                            </Grid>
+                          </SpaceBetween>
+                          <FormField
+                            description={
+                              <>
+                                请详读我们的{" "}
+                                <CloudscapeLink
+                                  href="#"
+                                  external={true}
+                                  variant="primary"
+                                  fontSize="body-s"
+                                >
+                                  条款与限制
+                                </CloudscapeLink>{" "}
+                                并点击同意。
+                              </>
+                            }
+                            label="条款与限制"
+                          >
+                            <Checkbox
+                              checked={agree}
+                              onChange={({ detail }) =>
+                                setAgree(detail.checked)
+                              }
+                            >
+                              我同意条款与限制
+                            </Checkbox>
+                          </FormField>
+                          {/* <Grid
+                            gridDefinition={[
+                              { colspan: 2 },
+                              { colspan: 5 },
+                              { colspan: 5 },
+                            ]}
+                          >
+                            <FormField
+                              description="请选择云供应商"
+                              label="云"
+                            ></FormField>
+                          </Grid> */}
+                        </Grid>
+                      )}
+                    </SpaceBetween>
+                  </div>
+                </Container>
+                <div style={{ float: "right" }}>
+                  <SpaceBetween direction="vertical" size="s">
+                    <SpaceBetween direction="horizontal" size="s">
+                      <Button>取消</Button>
+                      <Button variant="primary">预览</Button>
+                      <Button variant="primary">
+                        {output === "download" ? "下载" : "部署"}
+                      </Button>
+                    </SpaceBetween>
+                  </SpaceBetween>
+                </div>
               </SpaceBetween>
+              <Drawer
+                width={640}
+                placement="right"
+                closable={false}
+                onClose={onClose}
+                open={open}
+              >
+                <Cards
+                  onSelectionChange={({ detail }) =>
+                    setSelectedPics(detail?.selectedItems ?? [])
+                  }
+                  selectedItems={selectedPics}
+                  cardDefinition={{
+                    header: (item) => (
+                      <CloudscapeLink fontSize="body-m">
+                        {item.name}
+                      </CloudscapeLink>
+                    ),
+                    sections: [
+                      {
+                        id: "image",
+                        content: (item) => (
+                          <img
+                            style={{ width: "100%" }}
+                            src={item.img}
+                            alt="placeholder"
+                          />
+                        ),
+                      },
+                    ],
+                  }}
+                  cardsPerRow={[{ cards: 1 }]}
+                  items={[
+                    {
+                      name: "蓝色天空",
+                      img: "/assets/img/theme/blue-sky.png",
+                    },
+                    {
+                      name: "经典科技",
+                      img: "/assets/img/theme/classic-tech.png",
+                    },
+                    {
+                      name: "星球主题",
+                      img: "/assets/img/theme/moon.png",
+                    },
+                  ]}
+                  loadingText="Loading resources"
+                  selectionType="single"
+                  trackBy="name"
+                  visibleSections={["image"]}
+                />
+              </Drawer>
             </div>
           </div>
         </div>
