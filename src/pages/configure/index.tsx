@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./index.css";
-import { nav2Home } from "../../utils";
+import { nav2Home } from "../utils";
+import { generate, green, presetPalettes, red } from "@ant-design/colors";
 import {
   AttributeEditor,
   Checkbox,
@@ -18,9 +19,9 @@ import {
 } from "@cloudscape-design/components";
 import { Link as CloudscapeLink } from "@cloudscape-design/components";
 import { useEffect, useRef, useState } from "react";
-import { ColorPicker, Divider, Drawer } from "antd";
+import { ColorPicker, ColorPickerProps, Drawer, theme } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { AuthTypeList } from "../const";
+import { AuthTypeList, ThirdAuthTypeList } from "../const";
 
 const initialOidc = {
   label: "Authing",
@@ -30,28 +31,48 @@ const initialOidc = {
   redirectUrl: "",
 };
 
+type Presets = Required<ColorPickerProps>["presets"][number];
+
+const genPresets = (presets = presetPalettes) => {
+  return Object.entries(presets).map<Presets>(([label, colors]) => ({
+    label,
+    colors,
+    key: label,
+  }));
+};
+
 const Configure: React.FC = () => {
   const navigate = useNavigate();
+  const [appName, setAppName] = useState("Auth-Hub Demo");
+  const [author, setAuthor] = useState("進撃の巴图鲁");
   const [layout, setLayout] = useState("center");
-  const [background, setBackground] = useState("single");
+  const [themeType, setThemeType] = useState("single");
   const [singleColor, setSingleColor] = useState("#00071659");
-  const [singleColorOpen, setSingleColorOpen] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [cloudProvider, setCloudProvider] = useState<string>("aws");
-  const [open, setOpen] = useState(false);
-  const [agree, setAgree] = useState(false);
-  const [ak, setAk] = useState("");
-  const [sk, setSk] = useState("");
-  const [selectedPics, setSelectedPics] = useState<
-    { name: string; img: string }[]
-  >([]);
   const [gradientColor, setGradientColor] = useState<
     { color: string; percent: number }[]
   >([
     { color: "rgb(16, 142, 233)", percent: 0 },
     { color: "rgb(135, 208, 104)", percent: 100 },
   ]);
-
+  const [selectedPics, setSelectedPics] = useState<
+    { name: string; img: string }[]
+  >([]);
+  const [singleColorOpen, setSingleColorOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cloudProvider, setCloudProvider] = useState<string>("aws");
+  const [themeColor, setThemeColor] = useState("blue");
+  const [midway, setMidway] = useState<boolean>(false);
+  const [sso, setSSO] = useState<string>("midway");
+  const [open, setOpen] = useState(false);
+  const [agree, setAgree] = useState(false);
+  const [ak, setAk] = useState("");
+  const [sk, setSk] = useState("");
+  const { token } = theme.useToken();
+  const presets = genPresets({
+    primary: generate(token.colorPrimary),
+    red,
+    green,
+  });
   //   const [file, setFile] = useState<File[]>([]);
   const [mode, setMode] = useState("multi");
   const prevAuthTypesRef = useRef<string[]>([]);
@@ -61,16 +82,21 @@ const Configure: React.FC = () => {
     {
       label: "OIDC账号",
       value: "oidc",
-      description: "第三方IDP供应商申请的账号身份验证",
+      description: "IDP供应商申请的账号身份验证",
     },
   ]);
+  const [thirdAuthTypes, setThirdAuthTypes] = useState<
+    { label?: string; value?: string; description?: string }[]
+  >([]);
   const [output, setOutput] = useState("cloud");
   const [oidcList, setOidcList] = useState<any[]>([initialOidc]);
-  const [oidcProviderOption, setOidcProviderOption] = useState({
-    label: "Cognito",
-    value: "cognito",
-    // description: "sub value",
-  } as any);
+  const [oidcProviderOptions, setOidcProviderOptions] = useState([
+    {
+      label: "Cognito",
+      value: "cognito",
+      // description: "sub value",
+    },
+  ] as any);
   const targetAuthType = "oidc";
 
   const handleButtonClick = () => {
@@ -110,8 +136,8 @@ const Configure: React.FC = () => {
     // if()
   }, [authTypes]);
 
-  const genStyle = (background: string) => {
-    switch (background) {
+  const genStyle = (themeType: string) => {
+    switch (themeType) {
       case "single":
         return (
           <ColorPicker
@@ -276,6 +302,44 @@ const Configure: React.FC = () => {
               <SpaceBetween size={"l"}>
                 <Container
                   header={
+                    <Header variant="h3" description="设置应用的基本信息">
+                      基本信息
+                    </Header>
+                  }
+                >
+                  <div style={{ paddingTop: 20, paddingBottom: 20 }}>
+                    <SpaceBetween direction="vertical" size="m">
+                      <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                        <FormField
+                          description="请输入应用名称(建议10个字符以内)"
+                          label="应用名称"
+                        />
+                        <Input
+                          value={appName}
+                          placeholder="输入应用基本信息"
+                          onChange={(e) => {
+                            setAppName(e.detail.value);
+                          }}
+                        />
+                      </Grid>
+                      <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                        <FormField
+                          description="请输入应用开发者名称(建议10个字符以内)"
+                          label="作者信息"
+                        />
+                        <Input
+                          value={author}
+                          placeholder="输入开发者"
+                          onChange={(e) => {
+                            setAuthor(e.detail.value);
+                          }}
+                        />
+                      </Grid>
+                    </SpaceBetween>
+                  </div>
+                </Container>
+                <Container
+                  header={
                     <Header variant="h3" description="自定义交互样式和风格">
                       个性化设置
                     </Header>
@@ -307,12 +371,24 @@ const Configure: React.FC = () => {
                       </Grid>
                       <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
                         <FormField
+                          description="请设置主题色,用于定义基调风格"
+                          label="主题色"
+                        />
+                        <div style={{ marginTop: 5 }}>
+                          <ColorPicker
+                            presets={presets}
+                            defaultValue="#EC008C"
+                          />
+                        </div>
+                      </Grid>
+                      <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                        <FormField
                           description="请设置背景风格"
-                          label="背景主题"
+                          label="背景样式"
                         />
                         <Tiles
-                          onChange={({ detail }) => setBackground(detail.value)}
-                          value={background}
+                          onChange={({ detail }) => setThemeType(detail.value)}
+                          value={themeType}
                           items={[
                             {
                               label: "单一纯色",
@@ -335,18 +411,18 @@ const Configure: React.FC = () => {
                       <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
                         <FormField
                           description={
-                            background === "single" || background === "gradient"
+                            themeType === "single" || themeType === "gradient"
                               ? "请设置背景色"
                               : "请上传背景图片"
                           }
                           label={
-                            background === "single" || background === "gradient"
-                              ? "颜色设置"
-                              : "图片设置"
+                            themeType === "single" || themeType === "gradient"
+                              ? "背景色"
+                              : "背景图片"
                           }
                         />
                         <div style={{ marginTop: 5 }}>
-                          {genStyle(background)}
+                          {genStyle(themeType)}
                         </div>
                       </Grid>
                     </SpaceBetween>
@@ -438,29 +514,27 @@ const Configure: React.FC = () => {
                               {
                                 label: "OIDC供应商",
                                 constraintText: "请选择OIDC账号提供商",
-                                control: () => (
+                                control: (_, index) => (
                                   <Select
-                                    selectedOption={oidcProviderOption}
-                                    onChange={({ detail }) =>
-                                      setOidcProviderOption(
+                                    selectedOption={oidcProviderOptions}
+                                    onChange={({ detail }) => {
+                                      setOidcProviderOptions(
                                         detail.selectedOption
-                                      )
-                                    }
+                                      );
+                                      oidcList[index] = detail.selectedOption;
+                                    }}
                                     options={[
                                       {
                                         label: "Cognito",
                                         value: "cognito",
-                                        labelTag: "This is a label tag",
                                       },
                                       {
                                         label: "Authing",
                                         value: "authing",
-                                        labelTag: "This is a label tag",
                                       },
                                       {
                                         label: "Keycloak",
                                         value: "keycloak",
-                                        labelTag: "This is a label tag",
                                       },
                                     ]}
                                     triggerVariant="option"
@@ -515,6 +589,41 @@ const Configure: React.FC = () => {
                           />
                         </Grid>
                       )}
+                      <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                        <FormField
+                          description="请选择支持的认证方式"
+                          label="第三方认证"
+                        />
+                        <Multiselect
+                          selectedOptions={thirdAuthTypes}
+                          onChange={({ detail }) =>
+                            setThirdAuthTypes([...detail.selectedOptions])
+                          }
+                          options={ThirdAuthTypeList}
+                          placeholder="选择第三方认证..."
+                        />
+                      </Grid>
+                      <Grid gridDefinition={[{ colspan: 3 }, { colspan: 9 }]}>
+                        <FormField
+                          description="如果需要新增企业级SSO，请联系管理员"
+                          label="企业级SSO认证"
+                        />
+                        <SpaceBetween direction="vertical" size="xxs">
+                          <Grid gridDefinition={[{ colspan: 6 }]}>
+                            <Tiles
+                              onChange={({ detail }) => setSSO(detail.value)}
+                              value={sso}
+                              items={[
+                                {
+                                  label: "Amazon MiddleWay",
+                                  description: " Amazon微服务基础设施组件",
+                                  value: "midway",
+                                },
+                              ]}
+                            />
+                          </Grid>
+                        </SpaceBetween>
+                      </Grid>
                     </SpaceBetween>
                   </div>
                 </Container>
@@ -647,8 +756,44 @@ const Configure: React.FC = () => {
                 <div style={{ float: "right" }}>
                   <SpaceBetween direction="vertical" size="s">
                     <SpaceBetween direction="horizontal" size="s">
-                      <Button>取消</Button>
-                      <Button variant="primary">预览</Button>
+                      <Button
+                        onFollow={() => {
+                          nav2Home(navigate);
+                        }}
+                      >
+                        取消
+                      </Button>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          navigate("/preview", {
+                            state: {
+                              configParams: {
+                                basicInfo: {
+                                  appName,
+                                  author,
+                                },
+                                customizationInfo: {
+                                  layout,
+                                  theme: {
+                                    themeType,
+                                    themeDetail:
+                                      themeType === "single"
+                                        ? singleColor
+                                        : themeType === "gradient"
+                                        ? gradientColor
+                                        : selectedPics[0].name,
+                                  },
+                                },
+                                actionInfo: {},
+                                outputInfo: {},
+                              },
+                            },
+                          });
+                        }}
+                      >
+                        预览
+                      </Button>
                       <Button variant="primary">
                         {output === "download" ? "下载" : "部署"}
                       </Button>
@@ -691,15 +836,15 @@ const Configure: React.FC = () => {
                   items={[
                     {
                       name: "蓝色天空",
-                      img: "/assets/img/theme/blue-sky.png",
+                      img: "/assets/img/themeType/blue-sky.png",
                     },
                     {
                       name: "经典科技",
-                      img: "/assets/img/theme/classic-tech.png",
+                      img: "/assets/img/themeType/classic-tech.png",
                     },
                     {
                       name: "星球主题",
-                      img: "/assets/img/theme/moon.png",
+                      img: "/assets/img/themeType/moon.png",
                     },
                   ]}
                   loadingText="Loading resources"

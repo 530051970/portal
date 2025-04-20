@@ -5,3 +5,73 @@ body {
 #root {
    width: 100%;
 }
+
+[class^="awsui_tile-container_"] {
+   border: #EC008C 2px solid!important;
+}
+
+[class^="awsui_tile-container_"][class*="awsui_selected_"]:not(#\9) {
+    /* 样式 */
+    background: #f6f1f4!important;
+  }
+
+  /* .awsui_button_vjswe_jz1q6_101.awsui_variant-primary_vjswe_jz1q6_210:not(#\9) */
+  /* .awsui_button_vjswe_jz1q6_101.awsui_variant-primary_vjswe_jz1q6_210:not(#\9) { */
+[class^="awsui_button_"][class*="awsui_variant-primary"]:not(#\9) {
+    background:#EC008C!important;
+    border-color: #EC008C!important;
+}
+
+/* .awsui_button_vjswe_jz1q6_101.awsui_variant-normal_vjswe_jz1q6_126:not(#\9) { */
+[class^="awsui_button_"][class*="awsui_variant-normal"]:not(#\9) {
+    border-color: #EC008C!important;
+    color: #EC008C!important;
+}
+
+/* .awsui_styled-circle-fill_1mabk_hv3ca_155:not(#\9) */
+[class^="awsui_styled-circle-fill"]:not(#\9) {
+    stroke: #ec008c !important;
+}
+
+/* .awsui_token-box_dm8gx_1e6km_154:not(#\9) */
+[class^="awsui_token-box_"] {
+    border-color:#EC008C !important;
+    background: #f6f1f4!important;
+}
+
+
+[class^="awsui_dismiss-button_"]:not(#\9) {
+    color: #EC008C!important;
+}
+
+[class^="awsui_link_"][class*="awsui_variant-primary_"]:not(#\9) {
+    color: #EC008C!important;
+    text-decoration-color: #EC008C!important;
+} 
+
+[class^="awsui_button-trigger"]>[class^="awsui_arrow_"]:not(#\9) {
+    color: #EC008C!important;
+}
+/* .awsui_root_1fn7j_vifsx_93 > .awsui_styled-box-checked_1fn7j_vifsx_106:not(#\9) */
+[class^="awsui_root_"]>[class*="awsui_styled-box-checked_"]:not(#\9) {
+    fill: #EC008C!important;
+    stroke: #EC008C!important;
+}
+
+[class^="awsui_root_"]>[class^="awsui_styled-box-indeterminate"]:not(#\9) {
+    fill: #EC008C!important;
+    stroke: #EC008C!important;
+}
+
+[class^="awsui_link_"][class*="awsui_button_"]:not(#\9) {
+    color: #EC008C!important;
+}
+
+[class*="awsui_variant-normal_"]:not(#\9) {
+    border-color: #EC008C !important;
+    color: #EC008C !important;
+}
+
+[class^="awsui_input_"]:not(#\9):focus {
+    border-color: #EC008C !important;
+}

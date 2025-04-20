@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import ScrollToTop from "../comp/ScrollToTop";
 import "./index.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { nav2Home } from "../../utils";
+import { nav2Home } from "../utils";
 
 export const Home: React.FC = () => {
   const { hash } = useLocation();
@@ -155,7 +155,7 @@ export const Home: React.FC = () => {
                     <div className="col-lg-12">
                       <div className="hero-content text-center">
                         <p data-animation="fadeInUp" data-delay=".3s">
-                          基于云原生技术 打造
+                          面向云原生的基础能力建设之
                         </p>
                         <div data-animation="fadeInUp" data-delay=".5s">
                           <div

@@ -16,3 +16,30 @@ export const AuthTypeList = [
         "第三方IDP供应商申请的账号身份验证",
     },
   ]
+
+
+  export const ThirdAuthTypeList = [
+    {
+        label: "Google",
+        value: "google",
+        description: "全球最大搜索引擎公司",
+      },
+      {
+        label: "GitHub",
+        value: "github",
+        description: "全球最大开源代码托管平台",
+      },
+  ]
+export const DEFAULT_ZH_LANG = 'zh';
+export const DEFAULT_EN_LANG = 'en';
+export const ZH_LANGUAGE_LIST = [DEFAULT_ZH_LANG, 'zh-CN', 'zh-cn', 'zh_CN'];
+
+  export const EN_LANGUAGE_LIST = ['en', 'en-US', 'en_UK'];
+export const EN_LANG = 'en';
+export const ZH_LANG = 'zh';
+
+export const LOGIN_TYPE = {
+  USER: 'user',
+  SNS: 'sns',
+  OIDC: 'oidc',
+};
