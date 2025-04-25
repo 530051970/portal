@@ -330,13 +330,20 @@ export const Preview: React.FC = () => {
             <div className="banner">{configParams.basicInfo.appName}</div>
             <div className="sub-title">
               {t("auth:support-prefix")} {configParams.basicInfo.author}{" "}
-              {t("auth:support-postfix")}{" "}
+              
+              {t("auth:support-postfix")}
+              {configParams.customizationInfo.lang.length>1 && (
+                <>
+                {" "}
               <Link
                 variant="info"
                 onFollow={() => changeLanguage(lang, setLang, i18n)}
               >
                 {t("auth:changeLang")}
               </Link>
+                </>
+              )}
+              
             </div>
             <div className="tab" style={{ paddingLeft: "10%" }}>
               {/* {JSON.stringify(configParams.actionInfo.authDetails)} */}

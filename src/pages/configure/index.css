@@ -83,3 +83,9 @@ body {
         fill: #EC008C !important;
       }
 }
+
+.ant-result-icon {
+    svg {
+        fill: #EC008C !important; 
+    }
+}

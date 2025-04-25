@@ -86,7 +86,7 @@ const Configure: React.FC = () => {
   const [ssoAuthTypes, setSsoAuthTypes] = useState<AuthType[]>([]);
   const [output, setOutput] = useState("cloud");
   const [cn, setCn] = useState(true);
-  const [en, setEn] = useState(false);
+  const [en, setEn] = useState(true);
   const [oidcList, setOidcList] = useState<OidcType[]>([initialOidc]);
   const [primeColor, setPrimeColor] = useState<string>("#EC008C");
   const order = ["user", "sns", "oidc"]; 
