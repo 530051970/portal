@@ -1,0 +1,110 @@
+
+.preview-login-div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, rgba(0, 7, 22, 1), rgb(128 128 128 / 0%));
+  
+    .container {
+      
+      width: 620px;
+      background-color: white;
+      padding: 15px;
+      padding-bottom: 50px;
+      border-radius: 8px;
+    }
+  
+    .banner {
+      font-family: sans-serif;
+      color: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70px;
+      margin-top: 20px;
+      vertical-align: middle;
+      font-size: 30px;
+      font-weight: 800;
+      width: 100%;
+    }
+    
+    .sub-title {
+      width: 100%;
+      text-align: center;
+      color: grey;
+      font-size: 12px;
+      margin-bottom: 35px;
+      font-family: sans-serif;
+    }
+  
+    .bottom-setting {
+      width: 90%;
+    }
+
+    // .awsui_tabs-tab-active_14rmt_b9m39_345:not(#\9):not(.awsui_tabs-tab-disabled_14rmt_b9m39_313) 
+
+    // .awsui_tabs-tab-link_14rmt_b9m39_254:not(#\9):not(.awsui_tabs-tab-disabled_14rmt_b9m39_313):after
+    [class*="awsui_tabs-tab-link_"]:not(#\\9):not([class*="awsui_tabs-tab-disabled_"]):after  {
+      background: #EC008C !important;
+    }
+    [class*="awsui_tabs-tab-active_"]:not(#\\9):not([class*="awsui_tabs-tab-disabled_"])  {
+      color: #EC008C !important;
+    }
+
+    // .awsui_tabs-tab-link_14rmt_b9m39_254:not(#\9):not(.awsui_tabs-tab-disabled_14rmt_b9m39_313):after {
+      // [class^="awsui_tabs-tab-link_"] {
+        // color: #EC008C!important;
+      // }
+
+    // .awsui_tabs-tab-link_14rmt_b9m39_254:not(#\\9):hover {
+      [class^="awsui_tabs-tab-link_"]:hover {
+        color: #EC008C!important;
+      }
+    // .awsui_button_vjswe_jz1q6_101.awsui_variant-primary_vjswe_jz1q6_210:not(#\9)
+    [class*="awsui_button_"][class*="awsui_variant-primary_"] {
+      background-color: #EC008C!important;
+      border-color: #EC008C!important;
+    }
+  
+    [class^="awsui_tabs-tab-label"] {
+      border-right: none !important;
+    }
+    
+    [class^="awsui_tabs-heade"] {
+        border-bottom: none !important;
+    }
+    
+    .keep {
+      color: grey;
+    }
+    
+    .disable {
+      color: rgb(155, 167, 182)
+    }
+    
+    .selected {
+      color: #0972d3;
+    }
+    
+    .button-group {
+      margin-top: 20px;
+      width:90%;
+    }
+    
+    [class^="login awsui_button"] {
+      text-align: center !important;
+      width: 100%;
+      height: 40px;
+    }
+    
+    [role="tab"] {
+      text-align: center !important;
+    }
+    
+    [role="tablist"] {
+      text-align: center !important;
+    }
+  }
+  

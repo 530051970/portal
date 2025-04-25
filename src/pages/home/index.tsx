@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import ScrollToTop from "../comp/ScrollToTop";
 import "./index.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { nav2Home } from "../utils";
 
 export const Home: React.FC = () => {
@@ -83,10 +83,10 @@ export const Home: React.FC = () => {
                           <a href="#version">经典版本</a>
                         </li>
                         <li>
-                          <a href="">更新日志</a>
+                        <Link to="/deploy">部署记录</Link>
                         </li>
                         <li>
-                          <a href="">使用指南</a>
+                          <Link to="/docs">使用指南</Link>
                         </li>
                       </ul>
                     </nav>
@@ -749,11 +749,11 @@ export const Home: React.FC = () => {
               <div className="col-lg-2 col-md-6">
                 <div className="footer-widget mb-40">
                   <div className="footer-widget-title">
-                    <h4>关注我们</h4>
+                    <h4>关注B站</h4>
                   </div>
                   <div>
                     <img
-                      src="/assets/img/wechat/xiaochengxu.jpg"
+                      src="/assets/img/wechat/b.png"
                       alt=""
                       style={{ width: 150, paddingTop: 10 }}
                     />
@@ -767,7 +767,7 @@ export const Home: React.FC = () => {
                   </div>
                   <div>
                     <img
-                      src="/assets/img/wechat/personal.png"
+                      src="/assets/img/wechat/wx.png"
                       alt=""
                       style={{ width: 150, paddingTop: 10 }}
                     />

@@ -8,7 +8,7 @@ interface SNSProps{
 }
 const SNS = (props: SNSProps) => {
     const {username, password, setUsername, setPassword} = props
-    return (<div className='user'>
+    return (<div className='sns'>
         
     {/* </Grid> */}
     {/* <Grid
@@ -31,7 +31,7 @@ const SNS = (props: SNSProps) => {
       placeholder="Please input sns code"
     />
         </div><div className='item' style={{height:'100%'}}>
-          <div style={{height:"calc(100% - 18px)", width:"100%" ,border:"1px solid rgba(128, 128, 128, 0.3803921569)" ,display:'flex', alignItems:'center',justifyContent:'center',borderRadius:5, background:'rgba(128, 128, 128, 0.38)'}}>
+          <div style={{height:"calc(100% - 18px)", width:"100%" ,border:"1px solid #f6f1f4" ,display:'flex', alignItems:'center',justifyContent:'center',borderRadius:5, backgroundColor:'#f6f1f4', color: "#EC008C"}}>
           GET SNS CODE
           </div>
         

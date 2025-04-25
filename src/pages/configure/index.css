@@ -21,7 +21,9 @@ body {
     background:#EC008C!important;
     border-color: #EC008C!important;
 }
-
+[class*="awsui_select-option"][class*="awsui_selected"] {
+    background: #b5528d !important; 
+  }
 /* .awsui_button_vjswe_jz1q6_101.awsui_variant-normal_vjswe_jz1q6_126:not(#\9) { */
 [class^="awsui_button_"][class*="awsui_variant-normal"]:not(#\9) {
     border-color: #EC008C!important;
@@ -74,4 +76,10 @@ body {
 
 [class^="awsui_input_"]:not(#\9):focus {
     border-color: #EC008C !important;
+}
+
+[class*="awsui_radio-control"] {
+    svg {
+        fill: #EC008C !important;
+      }
 }

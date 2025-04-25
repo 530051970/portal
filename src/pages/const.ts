@@ -1,7 +1,7 @@
 export const AuthTypeList = [
     {
       label: "用户名/密码",
-      value: "username",
+      value: "user",
       description: "凭用户名/密码进行身份认证",
     },
     {
@@ -13,7 +13,7 @@ export const AuthTypeList = [
       label: "OIDC账号",
       value: "oidc",
       description:
-        "第三方IDP供应商申请的账号身份验证",
+        "IDP供应商申请的账号身份验证",
     },
   ]
 
@@ -29,6 +29,14 @@ export const AuthTypeList = [
         value: "github",
         description: "全球最大开源代码托管平台",
       },
+  ]
+
+  export const SsoList = [
+    {
+        label: "Amazon MiddleWay",
+        value: "midway",
+        description: "Amazon微服务基础设施组件",
+      }
   ]
 export const DEFAULT_ZH_LANG = 'zh';
 export const DEFAULT_EN_LANG = 'en';

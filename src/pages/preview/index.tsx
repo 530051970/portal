@@ -2,44 +2,47 @@ import {
   Button,
   Checkbox,
   Grid,
+  Icon,
   Link,
   SpaceBetween,
-  Spinner,
   Tabs,
+  TabsProps,
 } from "@cloudscape-design/components";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import yaml from "yaml";
+import { useLocation, useSearchParams } from "react-router-dom";
 import OIDC from "./component/oidc";
 import SNS from "./component/sns";
 import User from "./component/user";
-import "./style.scss";
+import "./index.scss";
 import { useTranslation } from "react-i18next";
-import { EN_LANG, LOGIN_TYPE, ZH_LANG, ZH_LANGUAGE_LIST } from "../const";
+import { EN_LANG, ZH_LANG, ZH_LANGUAGE_LIST } from "../const";
 import { changeLanguage } from "../utils";
+import { AuthDetailType, OidcOptionType, OidcType } from "../type";
 
 export const Preview: React.FC = () => {
-  const [activeTabId, setActiveTabId] = useState(LOGIN_TYPE.OIDC);
-  const [logging, setLogging] = useState(false);
+  // const [activeTabId, setActiveTabId] = useState(LOGIN_TYPE.OIDC);
+  const [logging] = useState(false);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [keep, setKeep] = useState(false);
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [error, setError] = useState("" as string);
-  const [config, setConfig] = useState(null as any);
+  // const [config] = useState(null as any);
   const [selectedProvider, setSelectedProvider] = useState(null as any);
   const [selectedProviderName, setSelectedProviderName] = useState(null as any);
-  const [tabs, setTabs] = useState([] as any[]);
-  const [projectName, setProjectName] = useState("" as string);
-  const [author, setAuthor] = useState("" as string);
-  const [version, setVersion] = useState(0);
+  // const [tabs] = useState([] as any[]);
+  // const [projectName, setProjectName] = useState("" as string);
+  // const [author, setAuthor] = useState("" as string);
   const [lang, setLang] = useState("");
-  const [isLoading, setIsLoading] = useState(true as boolean);
-  const [oidcList, setOidcList] = useState([] as any[]);
-  const oidcOptions: any[] = [];
+  // const [isLoading, setIsLoading] = useState(false as boolean);
+  // const [, setOidcList] = useState([] as any[]);
+  const oidcOptions: OidcOptionType[] = [];
   const location = useLocation();
-  const { configParams } = location.state || {};
+  const [searchParams] = useSearchParams();
+  const { configParams: stateConfigParams } = location.state || {};
+  const urlConfigParams = searchParams.get('config') ? JSON.parse(decodeURIComponent(searchParams.get('config') || '')) : null;
+  const configParams = stateConfigParams || urlConfigParams;
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     if (ZH_LANGUAGE_LIST.includes(i18n.language)) {
@@ -49,69 +52,35 @@ export const Preview: React.FC = () => {
       setLang(EN_LANG);
       i18n.changeLanguage(EN_LANG);
     }
-    const loadConfig = async () => {
-      let response = await fetch("/config.yaml");
-      let data = await response.text();
-      return yaml.parse(data);
-    };
-    loadConfig().then((configData) => {
-      setConfig(configData);
-    });
     setError("");
   }, [i18n]);
 
-  useEffect(() => {
-    updateEnv(config);
-  }, [config, username, password, lang, selectedProvider]);
-
-  const updateEnv = (config: any) => {
-    setIsLoading(true);
-    if (config !== null) {
-      let tmp_tabs: any[] = [];
-      setProjectName(config.project);
-      setAuthor(config.author);
-      if (config.login?.user) {
-        tmp_tabs.push({
-          label: (
-            <div style={{ width: 100, textAlign: "right" }}>
-              {t("auth:username")}
-            </div>
-          ),
-          id: "user",
-          content: (
-            <User
-              username={username}
-              password={password}
-              setUsername={setUsername}
-              setPassword={setPassword}
-            />
-          ),
-          disabled: config.login?.user?.disabled || false,
-        });
-      }
-      if (config.login?.sns) {
-        tmp_tabs.push({
-          label: (
-            <div style={{ paddingLeft: 15, width: 120, textAlign: "center" }}>
-              {t("auth:sns")}
-            </div>
-          ),
-          id: "sns",
-          disabled: config.login.sns.disabled || false,
-          content: (
-            <SNS
-              username={username}
-              password={password}
-              setUsername={setUsername}
-              setPassword={setPassword}
-            />
-          ),
-        });
-      }
-      if (configParams?.oidc && configParams.oidc.providers.length > 0) {
-        configParams.oidc.providers.forEach((item: any) => {
+  const genContentByAuthDetail = (authDetail: AuthDetailType) => {
+    switch (authDetail.type) {
+      case "user":
+        return (
+          <User
+            username={username}
+            password={password}
+            setUsername={setUsername}
+            setPassword={setPassword}
+          />
+        );
+        break;
+      case "sns":
+        return (
+          <SNS
+            username={username}
+            password={password}
+            setUsername={setUsername}
+            setPassword={setPassword}
+          />
+        );
+        break;
+      default:
+        authDetail.oidcList?.map((item: OidcType) => {
           let description = "";
-          switch (item.name) {
+          switch (item.value) {
             case "keycloak":
               description = t("auth:keycloakDesc");
               break;
@@ -124,59 +93,244 @@ export const Preview: React.FC = () => {
           }
           oidcOptions.push({
             label: item.label,
-            iconUrl: `imgs/${item.name}.png`,
-            value: item.name,
+            value: item.value,
             clientId: item.clientId,
-            clientSecret: item.clientSecret,
-            redirectUri: item.redirectUri,
-            disabled: item.disabled || false,
+            redirectUri: item.redirectUrl,
             tags: [description],
           });
-          // tmp_login_params.set(item.name, item)
         });
-      }
-
-      setOidcList(oidcOptions);
-
-      tmp_tabs.push({
-        label: (
-          <div style={{ width: 120, textAlign: "center" }}>
-            {t("auth:oidc")}
-          </div>
-        ),
-        id: "oidc",
-        disabled: config.login?.oidc.disabled || false,
-        content: (
-          <OIDC
-            provider={selectedProvider || oidcOptions[0]}
-            username={username}
-            password={password}
-            oidcOptions={oidcOptions}
-            setSelectedProviderName={setSelectedProviderName}
-            setProvider={setSelectedProvider}
-            setUsername={setUsername}
-            setPassword={setPassword}
-            setError={setError}
-          />
-        ),
-      });
+        return (
+          <>
+            <OIDC
+              provider={selectedProvider || oidcOptions[0]}
+              username={username}
+              password={password}
+              oidcOptions={oidcOptions}
+              setSelectedProviderName={setSelectedProviderName}
+              setProvider={setSelectedProvider}
+              setUsername={setUsername}
+              setPassword={setPassword}
+              setError={setError}
+            />
+            <div style={{ height: 20, width: "100%" }}></div>
+          </>
+        );
+      // return <></>;
     }
-    // setTabs(tmp_tabs);
-    setIsLoading(false);
   };
+
+  const genMainContent = () => {
+    const authDetails = configParams.actionInfo.authDetails;
+    if (authDetails.length > 1) {
+      const tabs: TabsProps.Tab[] = [];
+      authDetails.forEach((item: AuthDetailType) => {
+        switch (item.type) {
+          case "user":
+            tabs.push({
+              label: (
+                <div style={{ width: 100, textAlign: "right" }}>
+                  {t("auth:username")}
+                </div>
+              ),
+              id: "user",
+              content: (
+                <User
+                  username={username}
+                  password={password}
+                  setUsername={setUsername}
+                  setPassword={setPassword}
+                />
+              ),
+            });
+            break;
+          case "sns":
+            tabs.push({
+              label: (
+                <div
+                  style={{ paddingLeft: 15, width: 120, textAlign: "center" }}
+                >
+                  {t("auth:sns")}
+                </div>
+              ),
+              id: "sns",
+              content: (
+                <SNS
+                  username={username}
+                  password={password}
+                  setUsername={setUsername}
+                  setPassword={setPassword}
+                />
+              ),
+            });
+            break;
+          default:
+            item.oidcList?.map((item: OidcType) => {
+              let description = "";
+              switch (item.value) {
+                case "keycloak":
+                  description = t("auth:keycloakDesc");
+                  break;
+                case "authing":
+                  description = t("auth:authingDesc");
+                  break;
+                default:
+                  description = t("auth:cognitoDesc");
+                  break;
+              }
+              oidcOptions.push({
+                label: item.label,
+                value: item.value,
+                clientId: item.clientId,
+                redirectUri: item.redirectUrl,
+                tags: [description],
+              });
+            });
+            tabs.push({
+              label: (
+                <div style={{ width: 120, textAlign: "center" }}>
+                  {t("auth:oidc")}
+                </div>
+              ),
+              id: "oidc",
+              content: (
+                <OIDC
+                  provider={selectedProvider || oidcOptions[0]}
+                  username={username}
+                  password={password}
+                  oidcOptions={oidcOptions}
+                  setSelectedProviderName={setSelectedProviderName}
+                  setProvider={setSelectedProvider}
+                  setUsername={setUsername}
+                  setPassword={setPassword}
+                  setError={setError}
+                />
+              ),
+            });
+          // return <></>;
+        }
+      });
+
+      return <Tabs tabs={tabs}></Tabs>;
+    }
+
+    return <>{genContentByAuthDetail(authDetails[0])}</>;
+  };
+
+  // useEffect(() => {
+  //   updateEnv(config);
+  // }, [config, username, password, lang, selectedProvider]);
+
+  // const updateEnv = (config: any) => {
+  //   setIsLoading(true);
+  //   if (config !== null) {
+  //     let tmp_tabs: any[] = [];
+  //     setProjectName(config.project);
+  //     setAuthor(config.author);
+  //     if (config.login?.user) {
+  //       tmp_tabs.push({
+  //         label: (
+  //           <div style={{ width: 100, textAlign: "right" }}>
+  //             {t("auth:username")}
+  //           </div>
+  //         ),
+  //         id: "user",
+  //         content: (
+  //           <User
+  //             username={username}
+  //             password={password}
+  //             setUsername={setUsername}
+  //             setPassword={setPassword}
+  //           />
+  //         ),
+  //         disabled: config.login?.user?.disabled || false,
+  //       });
+  //     }
+  //     if (config.login?.sns) {
+  //       tmp_tabs.push({
+  //         label: (
+  //           <div style={{ paddingLeft: 15, width: 120, textAlign: "center" }}>
+  //             {t("auth:sns")}
+  //           </div>
+  //         ),
+  //         id: "sns",
+  //         disabled: config.login.sns.disabled || false,
+  //         content: (
+  //           <SNS
+  //             username={username}
+  //             password={password}
+  //             setUsername={setUsername}
+  //             setPassword={setPassword}
+  //           />
+  //         ),
+  //       });
+  //     }
+  //     if (configParams?.oidc && configParams.oidc.providers.length > 0) {
+  //       configParams.oidc.providers.forEach((item: any) => {
+  //         let description = "";
+  //         switch (item.name) {
+  //           case "keycloak":
+  //             description = t("auth:keycloakDesc");
+  //             break;
+  //           case "authing":
+  //             description = t("auth:authingDesc");
+  //             break;
+  //           default:
+  //             description = t("auth:cognitoDesc");
+  //             break;
+  //         }
+  //         oidcOptions.push({
+  //           label: item.label,
+  //           iconUrl: `imgs/${item.name}.png`,
+  //           value: item.name,
+  //           clientId: item.clientId,
+  //           clientSecret: item.clientSecret,
+  //           redirectUri: item.redirectUri,
+  //           disabled: item.disabled || false,
+  //           tags: [description],
+  //         });
+  //         // tmp_login_params.set(item.name, item)
+  //       });
+  //     }
+
+  //     setOidcList(oidcOptions);
+
+  //     tmp_tabs.push({
+  //       label: (
+  //         <div style={{ width: 120, textAlign: "center" }}>
+  //           {t("auth:oidc")}
+  //         </div>
+  //       ),
+  //       id: "oidc",
+  //       disabled: config.login?.oidc.disabled || false,
+  //       content: (
+  //         <OIDC
+  //           provider={selectedProvider || oidcOptions[0]}
+  //           username={username}
+  //           password={password}
+  //           oidcOptions={oidcOptions}
+  //           setSelectedProviderName={setSelectedProviderName}
+  //           setProvider={setSelectedProvider}
+  //           setUsername={setUsername}
+  //           setPassword={setPassword}
+  //           setError={setError}
+  //         />
+  //       ),
+  //     });
+  //   }
+  //   // setTabs(tmp_tabs);
+  //   setIsLoading(false);
+  // };
   // return () => {
-  return isLoading ? (
-    <div style={{ paddingTop: "20%", paddingLeft: "50%" }}>
-      <Spinner size="large" />
-    </div>
-  ) : (
+  return (
     <>
-      <div className="login-div">
+      <div className="preview-login-div">
+        {/* {JSON.stringify(configParams)} */}
         <SpaceBetween direction="vertical" size="m">
           <div className="container">
-            <div className="banner">{projectName}</div>
+            <div className="banner">{configParams.basicInfo.appName}</div>
             <div className="sub-title">
-              {t("auth:support-prefix")} {author} {t("auth:support-postfix")}{" "}
+              {t("auth:support-prefix")} {configParams.basicInfo.author}{" "}
+              {t("auth:support-postfix")}{" "}
               <Link
                 variant="info"
                 onFollow={() => changeLanguage(lang, setLang, i18n)}
@@ -185,11 +339,13 @@ export const Preview: React.FC = () => {
               </Link>
             </div>
             <div className="tab" style={{ paddingLeft: "10%" }}>
-              <Tabs
+              {/* {JSON.stringify(configParams.actionInfo.authDetails)} */}
+              {genMainContent()}
+              {/* <Tabs
                 onChange={({ detail }) => setActiveTabId(detail.activeTabId)}
                 activeTabId={activeTabId}
-                tabs={tabs}
-              />
+                tabs={genTabs()}
+              /> */}
               <div className="bottom-setting">
                 <Grid gridDefinition={[{ colspan: 4 }, { colspan: 8 }]}>
                   <div>
@@ -242,19 +398,59 @@ export const Preview: React.FC = () => {
                   ></div>
                 </Grid>
                 <div style={{ marginTop: 12 }}>
-                  <Button
-                    className="login"
-                    onClick={() => {
-                      console.log("SSO");
-                    }}
-                    disabled
-                  >
-                    {t("auth:sso")}
-                  </Button>
+                  <SpaceBetween direction="vertical" size="m">
+                    <Button
+                      className="login"
+                      onClick={() => {
+                        console.log("SSO");
+                      }}
+                      disabled
+                    >
+                      {t("auth:sso")}
+                    </Button>
+
+                    {showMore ? (
+                      <>
+                        <div
+                          style={{ display: "flex", justifyContent: "center" }}
+                          onClick={() => setShowMore(false)}
+                        >
+                          <Icon name="angle-up" />
+                        </div>
+                        <Button
+                      className="login"
+                      onClick={() => {
+                        console.log("SSO");
+                      }}
+                      disabled
+                    >
+                      {t("auth:google")}
+                    </Button>
+                    <Button
+                      className="login"
+                      onClick={() => {
+                        console.log("SSO");
+                      }}
+                      disabled
+                    >
+                      {t("auth:github")}
+                    </Button>
+
+
+                      </>
+                    ) : (
+                      <div
+                        style={{ display: "flex", justifyContent: "center" }}
+                        onClick={() => setShowMore(true)}
+                      >
+                        <Icon name="angle-down" />
+                      </div>
+                    )}
+                  </SpaceBetween>
                 </div>
                 <div
                   style={{
-                    marginTop: 30,
+                    marginTop: 10,
                     fontFamily: "Open Sans",
                     fontSize: 14,
                     textAlign: "right",
