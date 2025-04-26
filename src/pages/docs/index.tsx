@@ -3,12 +3,13 @@ import { Button } from "@cloudscape-design/components";
 import { Result } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { nav2Home } from "../utils";
+import GetStarted from "./get-started.mdx";
 
 const Docs: React.FC = () => {
-    const navigate = useNavigate();
-    return (
-        <>
-        <header>
+  const navigate = useNavigate();
+  return (
+    <>
+      <header>
         <div className="header__main header-sticky header-main-2">
           <div className="container">
             <div className="row">
@@ -80,26 +81,27 @@ const Docs: React.FC = () => {
         </div>
       </header>
       <section className="service-box-area pt-140 pb-30" id="module">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-12">
-                <div style={{ width: "100%", height: 80 }}></div>
-                <Result
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12">
+              <div style={{ width: "100%", height: 10 }}></div>
+              <GetStarted />
+              {/* <Result
     icon={<SmileOutlined />}
     title="文档中心"
     subTitle="好的，正在加紧开发中, 敬请期待..."
     extra={<Button variant="primary">返回主页</Button>}
-  />
-              </div>
+  /> */}
             </div>
           </div>
-        </section>
-        </>
-        // <div>
-        //     <h1>Deploy</h1>
-        //     <p>Deploy your application here</p>
-        // </div>
-    );
-}
+        </div>
+      </section>
+    </>
+    // <div>
+    //     <h1>Deploy</h1>
+    //     <p>Deploy your application here</p>
+    // </div>
+  );
+};
 
 export default Docs;

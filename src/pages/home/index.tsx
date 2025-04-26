@@ -82,9 +82,9 @@ export const Home: React.FC = () => {
                         <li>
                           <a href="#version">经典版本</a>
                         </li>
-                        <li>
-                        <Link to="/deploy">部署记录</Link>
-                        </li>
+                        {/* <li>
+                          <Link to="/deploy">部署记录</Link>
+                        </li> */}
                         <li>
                           <Link to="/docs">使用指南</Link>
                         </li>
@@ -188,7 +188,15 @@ export const Home: React.FC = () => {
                           </span>
                           &nbsp;&nbsp;
                           <a href="#">
-                            <span style={{ color: "#EC008C" }}>GitHub</span>
+                            <span style={{ color: "#EC008C" }}>GITHUB</span>
+                            &nbsp;&nbsp;
+                            <Link to="/deploy">
+                              <span style={{ color: "#EC008C" }}>更新日志</span>
+                            </Link>
+                            &nbsp;&nbsp;
+                            <Link to="/deploy">
+                              <span style={{ color: "#EC008C" }}>部署记录</span>
+                            </Link>
                           </a>
                         </div>
                         <div

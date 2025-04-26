@@ -212,7 +212,6 @@ export const Preview: React.FC = () => {
   return (
     <>
       <div className="preview-login-div">
-        {/* {JSON.stringify(configParams)} */}
         <SpaceBetween direction="vertical" size="m">
           <div
             className={`container ${
@@ -238,13 +237,7 @@ export const Preview: React.FC = () => {
               )}
             </div>
             <div className="tab" style={{ paddingLeft: "10%" }}>
-              {/* {JSON.stringify(configParams.actionInfo.authDetails)} */}
               {genMainContent()}
-              {/* <Tabs
-                onChange={({ detail }) => setActiveTabId(detail.activeTabId)}
-                activeTabId={activeTabId}
-                tabs={genTabs()}
-              /> */}
               <div className="bottom-setting">
                 <Grid gridDefinition={[{ colspan: 4 }, { colspan: 8 }]}>
                   <div>
