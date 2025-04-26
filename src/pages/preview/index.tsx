@@ -9,62 +9,45 @@ import {
   TabsProps,
 } from "@cloudscape-design/components";
 import { useEffect, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
 import OIDC from "./component/oidc";
 import SNS from "./component/sns";
 import User from "./component/user";
 import "./index.scss";
 import { useTranslation } from "react-i18next";
-import { EN_LANG, ZH_LANG, ZH_LANGUAGE_LIST } from "../const";
 import { changeLanguage } from "../utils";
 import { AuthDetailType, OidcOptionType, OidcType } from "../type";
 
 export const Preview: React.FC = () => {
-  // const [activeTabId, setActiveTabId] = useState(LOGIN_TYPE.OIDC);
   const [logging] = useState(false);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [keep, setKeep] = useState(false);
   const { t, i18n } = useTranslation();
-  // const [config] = useState(null as any);
   const [selectedProvider, setSelectedProvider] = useState(null as any);
   const [selectedProviderName, setSelectedProviderName] = useState(null as any);
-  // const [tabs] = useState([] as any[]);
-  // const [projectName, setProjectName] = useState("" as string);
-  // const [author, setAuthor] = useState("" as string);
-  // const [isLoading, setIsLoading] = useState(false as boolean);
-  // const [, setOidcList] = useState([] as any[]);
   const oidcOptions: OidcOptionType[] = [];
-  const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const { configParams: stateConfigParams } = location.state || {};
   const [error, setError] = useState("" as string);
-  const urlConfigParams = searchParams.get("config")
-    ? JSON.parse(decodeURIComponent(searchParams.get("config") || ""))
-    : null;
-  const configParams = stateConfigParams || urlConfigParams;
+  const urlParams = new URLSearchParams(window.location.search);
+  const configStr = urlParams.get("config");
+  const config = JSON.parse(configStr || "");
+  const configParams = config;
   const [lang, setLang] = useState(configParams.customizationInfo.lang[0]);
   const [showMore, setShowMore] = useState(false);
-  // i18n.changeLanguage(lang);
   useEffect(() => {
     i18n.changeLanguage(lang);
-    const color = configParams.customizationInfo.primeColor; // 比如传过来是 #FF5722
+    const color = configParams.customizationInfo.primeColor;
+    const backgroundColor = configParams.customizationInfo.theme.themeDetail;
 
     if (color) {
       document.documentElement.style.setProperty("--primary-color", color);
     }
+    if (backgroundColor) {
+      document.documentElement.style.setProperty(
+        "--background-color",
+        backgroundColor
+      );
+    }
   }, []);
-
-  // useEffect(() => {
-  //   if (ZH_LANGUAGE_LIST.includes(i18n.language)) {
-  //     setLang(ZH_LANG);
-  //     i18n.changeLanguage(ZH_LANG);
-  //   } else {
-  //     setLang(EN_LANG);
-  //     i18n.changeLanguage(EN_LANG);
-  //   }
-  //   setError("");
-  // }, [i18n]);
 
   const genContentByAuthDetail = (authDetail: AuthDetailType) => {
     switch (authDetail.type) {
@@ -219,121 +202,13 @@ export const Preview: React.FC = () => {
                 />
               ),
             });
-          // return <></>;
         }
       });
-
       return <Tabs tabs={tabs}></Tabs>;
     }
 
     return <>{genContentByAuthDetail(authDetails[0])}</>;
   };
-
-  // useEffect(() => {
-  //   updateEnv(config);
-  // }, [config, username, password, lang, selectedProvider]);
-
-  // const updateEnv = (config: any) => {
-  //   setIsLoading(true);
-  //   if (config !== null) {
-  //     let tmp_tabs: any[] = [];
-  //     setProjectName(config.project);
-  //     setAuthor(config.author);
-  //     if (config.login?.user) {
-  //       tmp_tabs.push({
-  //         label: (
-  //           <div style={{ width: 100, textAlign: "right" }}>
-  //             {t("auth:username")}
-  //           </div>
-  //         ),
-  //         id: "user",
-  //         content: (
-  //           <User
-  //             username={username}
-  //             password={password}
-  //             setUsername={setUsername}
-  //             setPassword={setPassword}
-  //           />
-  //         ),
-  //         disabled: config.login?.user?.disabled || false,
-  //       });
-  //     }
-  //     if (config.login?.sns) {
-  //       tmp_tabs.push({
-  //         label: (
-  //           <div style={{ paddingLeft: 15, width: 120, textAlign: "center" }}>
-  //             {t("auth:sns")}
-  //           </div>
-  //         ),
-  //         id: "sns",
-  //         disabled: config.login.sns.disabled || false,
-  //         content: (
-  //           <SNS
-  //             username={username}
-  //             password={password}
-  //             setUsername={setUsername}
-  //             setPassword={setPassword}
-  //           />
-  //         ),
-  //       });
-  //     }
-  //     if (configParams?.oidc && configParams.oidc.providers.length > 0) {
-  //       configParams.oidc.providers.forEach((item: any) => {
-  //         let description = "";
-  //         switch (item.name) {
-  //           case "keycloak":
-  //             description = t("auth:keycloakDesc");
-  //             break;
-  //           case "authing":
-  //             description = t("auth:authingDesc");
-  //             break;
-  //           default:
-  //             description = t("auth:cognitoDesc");
-  //             break;
-  //         }
-  //         oidcOptions.push({
-  //           label: item.label,
-  //           iconUrl: `imgs/${item.name}.png`,
-  //           value: item.name,
-  //           clientId: item.clientId,
-  //           clientSecret: item.clientSecret,
-  //           redirectUri: item.redirectUri,
-  //           disabled: item.disabled || false,
-  //           tags: [description],
-  //         });
-  //         // tmp_login_params.set(item.name, item)
-  //       });
-  //     }
-
-  //     setOidcList(oidcOptions);
-
-  //     tmp_tabs.push({
-  //       label: (
-  //         <div style={{ width: 120, textAlign: "center" }}>
-  //           {t("auth:oidc")}
-  //         </div>
-  //       ),
-  //       id: "oidc",
-  //       disabled: config.login?.oidc.disabled || false,
-  //       content: (
-  //         <OIDC
-  //           provider={selectedProvider || oidcOptions[0]}
-  //           username={username}
-  //           password={password}
-  //           oidcOptions={oidcOptions}
-  //           setSelectedProviderName={setSelectedProviderName}
-  //           setProvider={setSelectedProvider}
-  //           setUsername={setUsername}
-  //           setPassword={setPassword}
-  //           setError={setError}
-  //         />
-  //       ),
-  //     });
-  //   }
-  //   // setTabs(tmp_tabs);
-  //   setIsLoading(false);
-  // };
-  // return () => {
   return (
     <>
       <div className="preview-login-div">

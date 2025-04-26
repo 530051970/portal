@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./index.css";
 import { nav2Home } from "../utils";
-import { generate, green, presetPalettes, red } from "@ant-design/colors";
 import {
   AttributeEditor,
   Checkbox,
@@ -19,8 +18,7 @@ import {
 } from "@cloudscape-design/components";
 import { Link as CloudscapeLink } from "@cloudscape-design/components";
 import { useEffect, useRef, useState } from "react";
-import { ColorPicker, ColorPickerProps, Drawer, Result, theme } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { ColorPicker, ColorPickerProps, Drawer, Result } from "antd";
 import { AuthTypeList, SsoList, ThirdAuthTypeList } from "../const";
 import { AuthDetailType, AuthType, OidcType } from "../type";
 
@@ -41,8 +39,6 @@ function genPresets(presets: Record<string, string[]>) {
   }));
 }
 
-// const Demo: React.FC = () => {
-
 const Configure: React.FC = () => {
   const navigate = useNavigate();
   const [appName, setAppName] = useState("Auth-Hub Demo");
@@ -50,32 +46,21 @@ const Configure: React.FC = () => {
   const [layout, setLayout] = useState("center");
   const [themeType, setThemeType] = useState("single");
   const [singleColor, setSingleColor] = useState("#00071659");
-  const [gradientColor, setGradientColor] = useState<
-    { color: string; percent: number }[]
-  >([
-    { color: "rgb(16, 142, 233)", percent: 0 },
-    { color: "rgb(135, 208, 104)", percent: 100 },
-  ]);
+  const [gradientColor, setGradientColor] = useState<string>(
+    encodeURIComponent(
+      "linear-gradient(45deg, rgba(0, 7, 22, 1), rgb(128 128 128 / 0%))"
+    )
+  );
   const [selectedPics, setSelectedPics] = useState<
     { name: string; img: string }[]
   >([]);
   const [deploy, setDeploy] = useState(false);
-  const [singleColorOpen, setSingleColorOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cloudProvider, setCloudProvider] = useState<string>("aws");
-  // const [sso, setSSO] = useState<string>("midway");
   const [open, setOpen] = useState(false);
   const [agree, setAgree] = useState(false);
   const [ak, setAk] = useState("");
   const [sk, setSk] = useState("");
-  //   const { token } = theme.useToken();
-  //   const presets = genPresets({
-  //     primary: generate(token.colorPrimary),
-  //     red,
-  //     green,
-  //   });
-  //   const [file, setFile] = useState<File[]>([]);
-  //   const { token } = theme.useToken();
 
   const customPresets = {
     常用主题色: [
@@ -86,12 +71,26 @@ const Configure: React.FC = () => {
       "#faad14",
       "#13c2c2",
     ],
-    // "Primary Palette": generate(token.colorPrimary),
-    // Red: red,
-    // Green: green,
   };
 
+  const customBackgroundPresets = {
+    浅色系: ["#FAFAFAE6", "#F5F5F5D9", "#F0F0F0", "#F7F2ED", "#E5E5E5"],
+    高级感: ["#CED4DA", "#D6D3D1", "#DCDCDC", "#ECECEC", "#EBE5DF"],
+    深色系: ["#333333", "#2C3539", "#191970CC", "#353535", "#1C1C1C"],
+  };
+
+  const gradientOptions = [
+    "linear-gradient(45deg, rgba(0, 7, 22, 1), rgb(128 128 128 / 0%))",
+    "linear-gradient(120deg, rgba(168, 237, 234, 0.8) 0%, rgba(254, 214, 227, 0.8) 100%)",
+    "linear-gradient(to right, rgba(255, 236, 210, 0.7) 0%, rgba(252, 182, 159, 0.7) 100%)",
+    "linear-gradient(90deg, rgba(255, 107, 107, 0.9) 0%, rgba(255, 217, 61, 0.9) 100%)",
+    "linear-gradient(to bottom right, rgba(15, 12, 41, 0.8) 0%, rgba(48, 43, 99, 0.8) 50%, rgba(36, 36, 62, 0.8) 100%)",
+    "linear-gradient(to top, rgba(212, 252, 121, 0.7) 0%, rgba(150, 230, 161, 0.7) 100%)",
+    "linear-gradient(45deg, rgba(255, 107, 107, 0.8) 0%, rgba(78, 205, 196, 0.8) 100%)",
+  ];
+
   const presets = genPresets(customPresets);
+  const backgroundPresets = genPresets(customBackgroundPresets);
   const [mode, setMode] = useState("multi");
   const prevAuthTypesRef = useRef<string[]>([]);
   const [authTypes, setAuthTypes] = useState<AuthType[]>([
@@ -109,13 +108,6 @@ const Configure: React.FC = () => {
   const [oidcList, setOidcList] = useState<OidcType[]>([initialOidc]);
   const [primeColor, setPrimeColor] = useState<string>("#EC008C");
   const order = ["user", "sns", "oidc"];
-  // const [oidcProviderOptions, setOidcProviderOptions] = useState([
-  //   {
-  //     label: "Cognito",
-  //     value: "cognito",
-  //     // description: "sub value",
-  //   },
-  // ] as any);
   const targetAuthType = "oidc";
 
   const handleButtonClick = () => {
@@ -132,7 +124,6 @@ const Configure: React.FC = () => {
 
   const submitConfigure = async () => {
     if (output === "download") {
-      // try {
       const result: any = await fetch("https://example.com/file.pdf");
 
       if (result) {
@@ -147,9 +138,16 @@ const Configure: React.FC = () => {
     const files = event.target.files;
     if (files && files.length > 0) {
       console.log("选择的文件:", files[0]);
-      // 你可以在这里上传文件到服务器，例如通过 fetch 或 axios
     }
   };
+
+  const genGradientBorder = (g: string) => {
+    return g === gradientColor ? "2px solid #EC008C" : "0px solid #EC008C";
+  };
+
+  //   const handleColorChange = (color: string) => {
+  //     console.log("选中的颜色 / 渐变色是：", color);
+  //   };
 
   useEffect(() => {
     const prev = prevAuthTypesRef.current;
@@ -159,13 +157,10 @@ const Configure: React.FC = () => {
     const isPresentNow = curr.includes(targetAuthType);
 
     if (wasAbsentBefore && isPresentNow) {
-      //   console.log(`✅ authTypes 中新增了值 "${targetAuthType}"`);
       setOidcList([initialOidc]);
     }
 
-    // 更新 ref
     prevAuthTypesRef.current = authTypes.map((item) => item.value || "");
-    // if()
   }, [authTypes]);
 
   const genAuthDetails = (authTypes: AuthType[], oidcList: OidcType[]) => {
@@ -192,40 +187,31 @@ const Configure: React.FC = () => {
       case "single":
         return (
           <ColorPicker
-            value={singleColor}
-            open={singleColorOpen}
-            onOpenChange={setSingleColorOpen}
             onChangeComplete={(c) => {
               setSingleColor(c.toCssString());
             }}
-            showText={() => (
-              <DownOutlined style={{ color: "rgba(0, 0, 0, 0.25)" }} />
-            )}
+            presets={backgroundPresets}
+            value={singleColor}
           />
         );
       case "gradient":
         return (
-          <ColorPicker
-            value={gradientColor}
-            allowClear
-            mode="gradient"
-            onChangeComplete={(c) => {
-              const gradientString = c.toCssString(); // "linear-gradient(90deg, rgb(16, 142, 233) 0%, rgb(135, 208, 104) 100%)"
-
-              const gradientMatch = gradientString.match(
-                /rgb\(\d+,\d+,\d+\)\s*\d+%/g
-              );
-
-              if (gradientMatch) {
-                const gradientColors = gradientMatch.map((item) => {
-                  const [color, percent] = item.split(/\s+/); // 以空格拆分
-                  return { color, percent: parseInt(percent) };
-                });
-
-                setGradientColor(gradientColors);
-              }
-            }}
-          />
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            {gradientOptions.map((g, idx) => (
+              <div
+                key={idx}
+                onClick={() => setGradientColor(g)}
+                style={{
+                  width: 60,
+                  height: 30,
+                  borderRadius: 6,
+                  background: g,
+                  cursor: "pointer",
+                  border: genGradientBorder(g),
+                }}
+              />
+            ))}
+          </div>
         );
       default:
         return (
@@ -311,7 +297,6 @@ const Configure: React.FC = () => {
                     <a href="" className="grb-btn-2">
                       体验中心
                     </a>
-                    {/* <button className="draw" onClick={()=>{window.location.href='http://mis.leego.vip'}}>进入控制台</button> */}
                   </div>
                 </div>
               </div>
