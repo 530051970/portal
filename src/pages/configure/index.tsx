@@ -33,13 +33,15 @@ const initialOidc = {
 };
 type Presets = Required<ColorPickerProps>["presets"][number];
 
-const genPresets = (presets = presetPalettes) => {
+function genPresets(presets: Record<string, string[]>) {
   return Object.entries(presets).map<Presets>(([label, colors]) => ({
     label,
     colors,
     key: label,
   }));
-};
+}
+
+// const Demo: React.FC = () => {
 
 const Configure: React.FC = () => {
   const navigate = useNavigate();
@@ -66,13 +68,30 @@ const Configure: React.FC = () => {
   const [agree, setAgree] = useState(false);
   const [ak, setAk] = useState("");
   const [sk, setSk] = useState("");
-  const { token } = theme.useToken();
-  const presets = genPresets({
-    primary: generate(token.colorPrimary),
-    red,
-    green,
-  });
+  //   const { token } = theme.useToken();
+  //   const presets = genPresets({
+  //     primary: generate(token.colorPrimary),
+  //     red,
+  //     green,
+  //   });
   //   const [file, setFile] = useState<File[]>([]);
+  //   const { token } = theme.useToken();
+
+  const customPresets = {
+    常用主题色: [
+      "#EC008C",
+      "#1890ff",
+      "#ff4d4f",
+      "#52c41a",
+      "#faad14",
+      "#13c2c2",
+    ],
+    // "Primary Palette": generate(token.colorPrimary),
+    // Red: red,
+    // Green: green,
+  };
+
+  const presets = genPresets(customPresets);
   const [mode, setMode] = useState("multi");
   const prevAuthTypesRef = useRef<string[]>([]);
   const [authTypes, setAuthTypes] = useState<AuthType[]>([
@@ -89,7 +108,7 @@ const Configure: React.FC = () => {
   const [en, setEn] = useState(true);
   const [oidcList, setOidcList] = useState<OidcType[]>([initialOidc]);
   const [primeColor, setPrimeColor] = useState<string>("#EC008C");
-  const order = ["user", "sns", "oidc"]; 
+  const order = ["user", "sns", "oidc"];
   // const [oidcProviderOptions, setOidcProviderOptions] = useState([
   //   {
   //     label: "Cognito",
@@ -111,8 +130,17 @@ const Configure: React.FC = () => {
     setOpen(false);
   };
 
-  const submitConfigure = () => {
-    setDeploy(true);
+  const submitConfigure = async () => {
+    if (output === "download") {
+      // try {
+      const result: any = await fetch("https://example.com/file.pdf");
+
+      if (result) {
+        window.open(result, "_blank");
+      }
+    } else {
+      setDeploy(true);
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,25 +168,24 @@ const Configure: React.FC = () => {
     // if()
   }, [authTypes]);
 
-  const genAuthDetails = (authTypes: AuthType[], oidcList:OidcType[]) =>{
+  const genAuthDetails = (authTypes: AuthType[], oidcList: OidcType[]) => {
     const authDetails: AuthDetailType[] = [];
     authTypes.map((item) => {
       if (item.value === "oidc") {
         authDetails.push({
           type: "oidc",
-          oidcList: oidcList
-        })
+          oidcList: oidcList,
+        });
       } else {
         authDetails.push({
           type: item.value || "",
-        })
+        });
       }
-    })
+    });
     return authDetails.sort(
       (a, b) => order.indexOf(a.type) - order.indexOf(b.type)
-    )
-
-  }
+    );
+  };
 
   const genStyle = (themeType: string) => {
     switch (themeType) {
@@ -454,6 +481,7 @@ const Configure: React.FC = () => {
                               {
                                 label: "图片",
                                 value: "pic",
+                                disabled: true,
                                 description: "选择图片作为主题背景",
                               },
                             ]}
@@ -551,7 +579,16 @@ const Configure: React.FC = () => {
                             />
                             <AttributeEditor
                               onAddButtonClick={() =>
-                                setOidcList([...oidcList, { label: "", value:"", description: "", clientId: "", redirectUrl: "" }])
+                                setOidcList([
+                                  ...oidcList,
+                                  {
+                                    label: "",
+                                    value: "",
+                                    description: "",
+                                    clientId: "",
+                                    redirectUrl: "",
+                                  },
+                                ])
                               }
                               onRemoveButtonClick={({
                                 detail: { itemIndex },
@@ -575,9 +612,11 @@ const Configure: React.FC = () => {
                                         const newOidcList = [...oidcList];
                                         newOidcList[index] = {
                                           ...newOidcList[index],
-                                          label: detail.selectedOption.label || '',
-                                          value: detail.selectedOption.value || '',
-                                        }
+                                          label:
+                                            detail.selectedOption.label || "",
+                                          value:
+                                            detail.selectedOption.value || "",
+                                        };
                                         setOidcList(newOidcList);
                                       }}
                                       options={[
@@ -608,13 +647,15 @@ const Configure: React.FC = () => {
                                   control: (_, index) => (
                                     <SpaceBetween direction="vertical" size="s">
                                       <Input
-                                        value={oidcList[index].description || ''}
+                                        value={
+                                          oidcList[index].description || ""
+                                        }
                                         placeholder="输入描述 - 可选"
                                         onChange={({ detail }) => {
                                           const newOidcList = [...oidcList];
-                                        newOidcList[index].description =
-                                          detail.value;
-                                        setOidcList(newOidcList);
+                                          newOidcList[index].description =
+                                            detail.value;
+                                          setOidcList(newOidcList);
                                         }}
                                       />
                                       <Input
@@ -622,9 +663,9 @@ const Configure: React.FC = () => {
                                         placeholder="输入Client Id"
                                         onChange={({ detail }) => {
                                           const newOidcList = [...oidcList];
-                                        newOidcList[index].clientId =
-                                          detail.value;
-                                        setOidcList(newOidcList);
+                                          newOidcList[index].clientId =
+                                            detail.value;
+                                          setOidcList(newOidcList);
                                         }}
                                       />
                                       <Input
@@ -632,9 +673,9 @@ const Configure: React.FC = () => {
                                         placeholder="输入RedirectURL"
                                         onChange={({ detail }) => {
                                           const newOidcList = [...oidcList];
-                                        newOidcList[index].redirectUrl =
-                                          detail.value;
-                                        setOidcList(newOidcList);
+                                          newOidcList[index].redirectUrl =
+                                            detail.value;
+                                          setOidcList(newOidcList);
                                         }}
                                       />
                                     </SpaceBetween>
@@ -682,7 +723,7 @@ const Configure: React.FC = () => {
                           />
                           {/* <SpaceBetween direction="vertical" size="xxs">
                             <Grid gridDefinition={[{ colspan: 6 }]}> */}
-                            <Multiselect
+                          <Multiselect
                             selectedOptions={ssoAuthTypes}
                             onChange={({ detail }) =>
                               setSsoAuthTypes([...detail.selectedOptions])
@@ -690,7 +731,7 @@ const Configure: React.FC = () => {
                             options={SsoList}
                             placeholder="选择第三方认证..."
                           />
-                              {/* <Tiles
+                          {/* <Tiles
                                 onChange={({ detail }) => setSSO(detail.value)}
                                 value={sso}
                                 items={[
@@ -701,7 +742,7 @@ const Configure: React.FC = () => {
                                   },
                                 ]}
                               /> */}
-                            {/* </Grid>
+                          {/* </Grid>
                           </SpaceBetween> */}
                         </Grid>
                       </SpaceBetween>
@@ -845,7 +886,7 @@ const Configure: React.FC = () => {
                                 author,
                               },
                               customizationInfo: {
-                                lang: [cn&&"cn", en&&"en"].filter(Boolean),
+                                lang: [cn && "zh", en && "en"].filter(Boolean),
                                 layout,
                                 primeColor: primeColor,
                                 theme: {
@@ -859,13 +900,23 @@ const Configure: React.FC = () => {
                                 },
                               },
                               actionInfo: {
-                                authDetails : genAuthDetails(authTypes, oidcList),
-                                thirdAuthTypes: thirdAuthTypes.map(item => item.value),
-                                ssoList: ssoAuthTypes.map(item => item.value),
-                              }
+                                authDetails: genAuthDetails(
+                                  authTypes,
+                                  oidcList
+                                ),
+                                thirdAuthTypes: thirdAuthTypes.map(
+                                  (item) => item.value
+                                ),
+                                ssoList: ssoAuthTypes.map((item) => item.value),
+                              },
                             };
-                            const encodedParams = encodeURIComponent(JSON.stringify(configParams));
-                            window.open(`/preview?config=${encodedParams}`, '_blank');
+                            const encodedParams = encodeURIComponent(
+                              JSON.stringify(configParams)
+                            );
+                            window.open(
+                              `/preview?config=${encodedParams}`,
+                              "_blank"
+                            );
                             // navigate("/preview", {
                             //   state: configParams
                             // });

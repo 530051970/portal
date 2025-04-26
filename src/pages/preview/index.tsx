@@ -26,34 +26,45 @@ export const Preview: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [keep, setKeep] = useState(false);
   const { t, i18n } = useTranslation();
-  const [error, setError] = useState("" as string);
   // const [config] = useState(null as any);
   const [selectedProvider, setSelectedProvider] = useState(null as any);
   const [selectedProviderName, setSelectedProviderName] = useState(null as any);
   // const [tabs] = useState([] as any[]);
   // const [projectName, setProjectName] = useState("" as string);
   // const [author, setAuthor] = useState("" as string);
-  const [lang, setLang] = useState("");
   // const [isLoading, setIsLoading] = useState(false as boolean);
   // const [, setOidcList] = useState([] as any[]);
   const oidcOptions: OidcOptionType[] = [];
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { configParams: stateConfigParams } = location.state || {};
-  const urlConfigParams = searchParams.get('config') ? JSON.parse(decodeURIComponent(searchParams.get('config') || '')) : null;
+  const [error, setError] = useState("" as string);
+  const urlConfigParams = searchParams.get("config")
+    ? JSON.parse(decodeURIComponent(searchParams.get("config") || ""))
+    : null;
   const configParams = stateConfigParams || urlConfigParams;
+  const [lang, setLang] = useState(configParams.customizationInfo.lang[0]);
   const [showMore, setShowMore] = useState(false);
-
+  // i18n.changeLanguage(lang);
   useEffect(() => {
-    if (ZH_LANGUAGE_LIST.includes(i18n.language)) {
-      setLang(ZH_LANG);
-      i18n.changeLanguage(ZH_LANG);
-    } else {
-      setLang(EN_LANG);
-      i18n.changeLanguage(EN_LANG);
+    i18n.changeLanguage(lang);
+    const color = configParams.customizationInfo.primeColor; // 比如传过来是 #FF5722
+
+    if (color) {
+      document.documentElement.style.setProperty("--primary-color", color);
     }
-    setError("");
-  }, [i18n]);
+  }, []);
+
+  // useEffect(() => {
+  //   if (ZH_LANGUAGE_LIST.includes(i18n.language)) {
+  //     setLang(ZH_LANG);
+  //     i18n.changeLanguage(ZH_LANG);
+  //   } else {
+  //     setLang(EN_LANG);
+  //     i18n.changeLanguage(EN_LANG);
+  //   }
+  //   setError("");
+  // }, [i18n]);
 
   const genContentByAuthDetail = (authDetail: AuthDetailType) => {
     switch (authDetail.type) {
@@ -74,6 +85,7 @@ export const Preview: React.FC = () => {
             password={password}
             setUsername={setUsername}
             setPassword={setPassword}
+            primeColor={configParams.customizationInfo.primeColor}
           />
         );
         break;
@@ -159,6 +171,7 @@ export const Preview: React.FC = () => {
                   password={password}
                   setUsername={setUsername}
                   setPassword={setPassword}
+                  primeColor={configParams.customizationInfo.primeColor}
                 />
               ),
             });
@@ -326,24 +339,28 @@ export const Preview: React.FC = () => {
       <div className="preview-login-div">
         {/* {JSON.stringify(configParams)} */}
         <SpaceBetween direction="vertical" size="m">
-          <div className="container">
+          <div
+            className={`container ${
+              configParams.customizationInfo.layout === "right"
+                ? "container-right"
+                : ""
+            }`}
+          >
             <div className="banner">{configParams.basicInfo.appName}</div>
             <div className="sub-title">
               {t("auth:support-prefix")} {configParams.basicInfo.author}{" "}
-              
               {t("auth:support-postfix")}
-              {configParams.customizationInfo.lang.length>1 && (
+              {configParams.customizationInfo.lang.length > 1 && (
                 <>
-                {" "}
-              <Link
-                variant="info"
-                onFollow={() => changeLanguage(lang, setLang, i18n)}
-              >
-                {t("auth:changeLang")}
-              </Link>
+                  {" "}
+                  <Link
+                    variant="info"
+                    onFollow={() => changeLanguage(lang, setLang, i18n)}
+                  >
+                    {t("auth:changeLang")}
+                  </Link>
                 </>
               )}
-              
             </div>
             <div className="tab" style={{ paddingLeft: "10%" }}>
               {/* {JSON.stringify(configParams.actionInfo.authDetails)} */}
@@ -425,25 +442,23 @@ export const Preview: React.FC = () => {
                           <Icon name="angle-up" />
                         </div>
                         <Button
-                      className="login"
-                      onClick={() => {
-                        console.log("SSO");
-                      }}
-                      disabled
-                    >
-                      {t("auth:google")}
-                    </Button>
-                    <Button
-                      className="login"
-                      onClick={() => {
-                        console.log("SSO");
-                      }}
-                      disabled
-                    >
-                      {t("auth:github")}
-                    </Button>
-
-
+                          className="login"
+                          onClick={() => {
+                            console.log("SSO");
+                          }}
+                          disabled
+                        >
+                          {t("auth:google")}
+                        </Button>
+                        <Button
+                          className="login"
+                          onClick={() => {
+                            console.log("SSO");
+                          }}
+                          disabled
+                        >
+                          {t("auth:github")}
+                        </Button>
                       </>
                     ) : (
                       <div
