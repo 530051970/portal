@@ -1,6 +1,3 @@
-import { SmileOutlined } from "@ant-design/icons";
-import { Button } from "@cloudscape-design/components";
-import { Result } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { nav2Home } from "../utils";
 import GetStarted from "./get-started.mdx";
